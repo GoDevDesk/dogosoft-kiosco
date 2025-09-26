@@ -1,0 +1,67 @@
+﻿<Window x:Class="KioscoApp.Client.PosWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nueva Venta" Height="500" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Buscador -->
+            <RowDefinition Height="*"/>
+            <!-- Lista de ítems + botones -->
+            <RowDefinition Height="Auto"/>
+            <!-- Total y cobro -->
+        </Grid.RowDefinitions>
+
+        <!-- Buscador -->
+        <StackPanel Orientation="Vertical" Grid.Row="0">
+            <StackPanel Orientation="Horizontal">
+                <TextBox x:Name="TxtCodigo" Width="200" Margin="0,0,10,0"
+                 ToolTip="Código o nombre de producto"
+                 KeyDown="TxtCodigo_KeyDown"/>
+                <Button Content="Agregar" Click="BtnAgregar_Click"/>
+            </StackPanel>
+            <!-- Mensaje de advertencia -->
+            <TextBlock x:Name="TxtMensaje" Foreground="Red" FontWeight="Bold" Margin="0,5,0,0"/>
+        </StackPanel>
+
+
+        <!-- Lista de ítems y botones -->
+        <Grid Grid.Row="1" Margin="0,10,0,10">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <!-- Botones debajo -->
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <!-- DataGrid -->
+            <DataGrid x:Name="GridVenta" AutoGenerateColumns="False"
+                      CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
+                      Grid.Row="0" 
+                      SelectionUnit="FullRow"
+                      SelectionChanged="GridVenta_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Producto" Binding="{Binding Name}" Width="*"/>
+                    <DataGridTextColumn Header="Cantidad" Binding="{Binding Cantidad}" Width="80"/>
+                    <DataGridTextColumn Header="Precio" Binding="{Binding Precio, StringFormat=C}" Width="100"/>
+                    <DataGridTextColumn Header="Subtotal" Binding="{Binding Subtotal, StringFormat=C}" Width="100"/>
+                    <DataGridTextColumn Header="Disponible" Binding="{Binding StockDisponible}" Width="100"/>
+                </DataGrid.Columns>
+            </DataGrid>
+
+            <!-- Botones para modificar ítem -->
+            <StackPanel Orientation="Horizontal" Grid.Row="1" HorizontalAlignment="Left" Margin="0,5,0,0">
+                <Button Content="Eliminar Ítem" Click="BtnEliminar_Click" Width="120"/>
+                <Button Content="Modificar Cantidad" Click="BtnModificarCantidad_Click" Width="150" Margin="10,0,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Total y cobro -->
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Right">
+            <TextBlock Text="Total:" VerticalAlignment="Center" FontWeight="Bold" Margin="0,0,10,0"/>
+            <TextBlock x:Name="TxtTotal" VerticalAlignment="Center" FontWeight="Bold" Width="100"/>
+            <TextBox x:Name="TxtPago" Width="100" Margin="10,0"
+                     ToolTip="Monto pagado por el cliente"/>
+            <Button x:Name="BtnCobrar" Content="Cobrar" Click="BtnCobrar_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>

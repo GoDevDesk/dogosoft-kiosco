@@ -1,0 +1,34 @@
+﻿<Window x:Class="KioscoApp.Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Mi Kiosco" Height="450" Width="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Barra superior con licencia -->
+        <StackPanel Orientation="Horizontal" Grid.Row="0" VerticalAlignment="Center" Height="40">
+            <TextBlock x:Name="TxtLicense" FontWeight="Bold" Margin="0,0,20,0"/>
+            <TextBlock x:Name="TxtExpires" VerticalAlignment="Center"/>
+            <Button Content="Ingresar clave" Click="BtnIngresarClave_Click" Margin="20,0,0,0"/>
+            <Button Content="Nueva venta (demo)" Click="BtnNuevaVenta_Click" Margin="10,0,0,0"/>
+            <Button Content="Historial de Ventas" Width="124" Height="38" Click="BtnHistorialVentas_Click" Margin="10,0,0,0"/>
+            <Button Content="Productos" Width="100" Height="38" Click="BtnProductos_Click" Margin="10,0,0,0"/>
+
+
+        </StackPanel>
+
+        <!-- Grilla de productos -->
+        <DataGrid x:Name="GridProducts" Grid.Row="1" AutoGenerateColumns="False" IsReadOnly="True">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Código" Binding="{Binding Code}" Width="80"/>
+                <DataGridTextColumn Header="Nombre" Binding="{Binding Name}" Width="*"/>
+                <DataGridTextColumn Header="Precio" Binding="{Binding Price}" Width="100"/>
+                <DataGridTextColumn Header="Stock" Binding="{Binding Stock}" Width="80"/>
+                <DataGridTextColumn Header="Categoría" Binding="{Binding Category}" Width="120"/>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+</Window>

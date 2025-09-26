@@ -1,0 +1,14 @@
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\bin\Release\net8.0\KioscoApp.Core.deps.json
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\bin\Release\net8.0\KioscoApp.Core.runtimeconfig.json
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\bin\Release\net8.0\KioscoApp.Core.dll
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\bin\Release\net8.0\KioscoApp.Core.pdb
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Release\net8.0\KioscoApp.Core.csproj.AssemblyReference.cache
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Release\net8.0\KioscoApp.Core.GeneratedMSBuildEditorConfig.editorconfig
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Release\net8.0\KioscoApp.Core.AssemblyInfoInputs.cache
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Release\net8.0\KioscoApp.Core.AssemblyInfo.cs
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Release\net8.0\KioscoApp.Core.csproj.CoreCompileInputs.cache
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Release\net8.0\KioscoApp.Core.dll
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Release\net8.0\refint\KioscoApp.Core.dll
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Release\net8.0\KioscoApp.Core.pdb
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Release\net8.0\KioscoApp.Core.genruntimeconfig.cache
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Release\net8.0\ref\KioscoApp.Core.dll
