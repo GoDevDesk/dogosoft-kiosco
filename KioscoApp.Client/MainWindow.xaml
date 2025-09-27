@@ -184,69 +184,241 @@
                 </Grid>
             </Border>
 
-            <!-- LADO DERECHO - MONTO Y COBRO -->
-            <Border Grid.Column="1" Background="Black">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <!-- Área del total -->
-                        <RowDefinition Height="Auto"/>
-                        <!-- Área de pago -->
-                        <RowDefinition Height="Auto"/>
-                        <!-- Botón cobrar -->
-                    </Grid.RowDefinitions>
+            <!-- LADO DERECHO - DIVIDIDO EN DOS PARTES -->
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <!-- Parte superior - Área de cobro (un poco más espacio) -->
+                    <RowDefinition Height="1.3*"/>
+                    <!-- Parte inferior - Botones y logo (menos espacio para botones, más para logo) -->
+                    <RowDefinition Height="2.7*"/>
+                </Grid.RowDefinitions>
 
-                    <!-- TOTAL A COBRAR -->
-                    <StackPanel Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Text="TOTAL A COBRAR" 
-                                   Foreground="#3498DB" FontSize="24" FontWeight="Bold" 
-                                   HorizontalAlignment="Center" Margin="0,0,0,20"/>
+                <!-- PARTE SUPERIOR - ÁREA DE COBRO (MÁS ESPACIO) -->
+                <Border Grid.Row="0" Background="Black">
+                    <Grid Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Título -->
+                            <RowDefinition Height="*"/>
+                            <!-- Total -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Pago -->
+                            <RowDefinition Height="Auto"/>
+                            <!-- Botón -->
+                        </Grid.RowDefinitions>
 
-                        <TextBlock x:Name="TxtTotalGrande" Text="$0.00" 
-                                   Foreground="#3498DB" FontSize="72" FontWeight="Bold" 
-                                   HorizontalAlignment="Center" 
-                                   FontFamily="Consolas"/>
-                    </StackPanel>
+                        <!-- TÍTULO -->
+                        <TextBlock Grid.Row="0" Text="TOTAL A COBRAR" 
+                                   Foreground="#3498DB" FontSize="16" FontWeight="Bold" 
+                                   HorizontalAlignment="Center" Margin="0,10,0,10"/>
 
-                    <!-- ÁREA DE PAGO -->
-                    <StackPanel Grid.Row="1" Margin="20" HorizontalAlignment="Center">
-                        <TextBlock Text="Monto recibido:" 
-                                   Foreground="White" FontSize="16" FontWeight="Bold" 
-                                   HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                        <!-- TOTAL (MÁS ESPACIO PARA NO CORTARSE) -->
+                        <Viewbox Grid.Row="1" StretchDirection="DownOnly" Stretch="Uniform" Margin="5">
+                            <TextBlock x:Name="TxtTotalGrande" Text="$0.00" 
+                                       Foreground="#3498DB" FontSize="40" FontWeight="Bold" 
+                                       HorizontalAlignment="Center" VerticalAlignment="Center"
+                                       FontFamily="Consolas"/>
+                        </Viewbox>
 
-                        <TextBox x:Name="TxtPago" Width="200" Height="40" FontSize="18"
-                                 ToolTip="Monto pagado por el cliente"
-                                 HorizontalContentAlignment="Center"
-                                 VerticalContentAlignment="Center"
-                                 FontFamily="Consolas"/>
-                    </StackPanel>
+                        <!-- CAMPO PAGO -->
+                        <StackPanel Grid.Row="2" Margin="10,10">
+                            <TextBlock Text="Monto recibido:" 
+                                       Foreground="White" FontSize="12" FontWeight="Bold" 
+                                       HorizontalAlignment="Center" Margin="0,0,0,8"/>
 
-                    <!-- BOTÓN COBRAR -->
-                    <Button x:Name="BtnCobrar" Grid.Row="2" Content="COBRAR" 
-                            Click="BtnCobrar_Click"
-                            Height="80" Margin="20,10,20,20"
-                            FontSize="28" FontWeight="Bold"
-                            Background="#3498DB" Foreground="White"
-                            IsEnabled="False">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="#3498DB"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <Setter Property="BorderThickness" Value="0"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#2980B9"/>
-                                    </Trigger>
-                                    <Trigger Property="IsEnabled" Value="False">
-                                        <Setter Property="Background" Value="#7F8C8D"/>
-                                        <Setter Property="Foreground" Value="#BDC3C7"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-                </Grid>
-            </Border>
+                            <TextBox x:Name="TxtPago" Height="35" FontSize="14"
+                                     ToolTip="Monto pagado por el cliente"
+                                     HorizontalContentAlignment="Center"
+                                     VerticalContentAlignment="Center"
+                                     FontFamily="Consolas"/>
+                        </StackPanel>
+
+                        <!-- BOTÓN COBRAR (AZUL CON LETRA BLANCA) -->
+                        <Button x:Name="BtnCobrar" Grid.Row="3" Content="COBRAR" 
+                                Click="BtnCobrar_Click"
+                                Height="45" Margin="10,5,10,15"
+                                FontSize="16" FontWeight="Bold"
+                                IsEnabled="False">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="#3498DB"/>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#2980B9"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Background" Value="#3498DB"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="Opacity" Value="0.6"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- PARTE INFERIOR - BOTONES Y LOGO -->
+                <Border Grid.Row="1" Background="#ECF0F1" BorderBrush="#BDC3C7" BorderThickness="0,1,0,0">
+                    <Grid Margin="15">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <!-- Título -->
+                            <RowDefinition Height="1*"/>
+                            <!-- Botones (menos espacio) -->
+                            <RowDefinition Height="1.5*"/>
+                            <!-- Logo (más espacio) -->
+                        </Grid.RowDefinitions>
+
+                        <!-- TÍTULO -->
+                        <TextBlock Grid.Row="0" Text="ACCIONES RÁPIDAS" 
+                                   FontSize="14" FontWeight="Bold" 
+                                   Foreground="#2C3E50" HorizontalAlignment="Center" 
+                                   Margin="0,10,0,15"/>
+
+                        <!-- BOTONES ADICIONALES (ESTILO MEJORADO) -->
+                        <StackPanel Grid.Row="1" VerticalAlignment="Top">
+                            <Button x:Name="BtnDescuento" Content="💰 Aplicar Descuento" 
+                                    Height="35" Margin="0,3" FontSize="12" FontWeight="Bold"
+                                    BorderThickness="2" BorderBrush="#E67E22"
+                                    Background="White" Foreground="#E67E22"
+                                    Click="BtnDescuento_Click" IsEnabled="False">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="White"/>
+                                        <Setter Property="Foreground" Value="#E67E22"/>
+                                        <Setter Property="BorderBrush" Value="#E67E22"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#E67E22"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Background" Value="#F8F9FA"/>
+                                                <Setter Property="Foreground" Value="#BDC3C7"/>
+                                                <Setter Property="BorderBrush" Value="#BDC3C7"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button x:Name="BtnCupon" Content="🎫 Usar Cupón" 
+                                    Height="35" Margin="0,3" FontSize="12" FontWeight="Bold"
+                                    BorderThickness="2" BorderBrush="#9B59B6"
+                                    Background="White" Foreground="#9B59B6"
+                                    Click="BtnCupon_Click" IsEnabled="False">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="White"/>
+                                        <Setter Property="Foreground" Value="#9B59B6"/>
+                                        <Setter Property="BorderBrush" Value="#9B59B6"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#9B59B6"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Background" Value="#F8F9FA"/>
+                                                <Setter Property="Foreground" Value="#BDC3C7"/>
+                                                <Setter Property="BorderBrush" Value="#BDC3C7"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button x:Name="BtnPagoTarjeta" Content="💳 Pago con Tarjeta" 
+                                    Height="35" Margin="0,3" FontSize="12" FontWeight="Bold"
+                                    BorderThickness="2" BorderBrush="#27AE60"
+                                    Background="White" Foreground="#27AE60"
+                                    Click="BtnPagoTarjeta_Click" IsEnabled="False">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="White"/>
+                                        <Setter Property="Foreground" Value="#27AE60"/>
+                                        <Setter Property="BorderBrush" Value="#27AE60"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#27AE60"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Background" Value="#F8F9FA"/>
+                                                <Setter Property="Foreground" Value="#BDC3C7"/>
+                                                <Setter Property="BorderBrush" Value="#BDC3C7"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button x:Name="BtnTransferencia" Content="🏦 Transferencia" 
+                                    Height="35" Margin="0,3" FontSize="12" FontWeight="Bold"
+                                    BorderThickness="2" BorderBrush="#3498DB"
+                                    Background="White" Foreground="#3498DB"
+                                    Click="BtnTransferencia_Click" IsEnabled="False">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="White"/>
+                                        <Setter Property="Foreground" Value="#3498DB"/>
+                                        <Setter Property="BorderBrush" Value="#3498DB"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#3498DB"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                            <Trigger Property="IsEnabled" Value="False">
+                                                <Setter Property="Background" Value="#F8F9FA"/>
+                                                <Setter Property="Foreground" Value="#BDC3C7"/>
+                                                <Setter Property="BorderBrush" Value="#BDC3C7"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button x:Name="BtnCancelar" Content="❌ Cancelar Venta" 
+                                    Height="35" Margin="0,3" FontSize="12" FontWeight="Bold"
+                                    BorderThickness="2" BorderBrush="#E74C3C"
+                                    Background="White" Foreground="#E74C3C"
+                                    Click="BtnCancelar_Click">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="White"/>
+                                        <Setter Property="Foreground" Value="#E74C3C"/>
+                                        <Setter Property="BorderBrush" Value="#E74C3C"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#E74C3C"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </StackPanel>
+
+                        <!-- LOGO DE LA APLICACIÓN (MÁS GRANDE) -->
+                        <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20">
+                            <Border Background="#2C3E50" CornerRadius="12" Padding="25,15">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="🏪" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                    <TextBlock Text="MI KIOSCO" FontSize="16" FontWeight="Bold" 
+                                               Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="Sistema POS Integrado" FontSize="12" 
+                                               Foreground="#BDC3C7" HorizontalAlignment="Center" Margin="0,0,0,5"/>
+                                    <TextBlock Text="v1.0.0" FontSize="10" 
+                                               Foreground="#7F8C8D" HorizontalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

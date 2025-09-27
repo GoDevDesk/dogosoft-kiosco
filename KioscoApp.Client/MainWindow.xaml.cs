@@ -96,6 +96,50 @@ namespace KioscoApp.Client
 
         #endregion
 
+        #region Botones de Acciones Rápidas
+
+        private void BtnDescuento_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Funcionalidad en desarrollo", "Aplicar Descuento", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void BtnCupon_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Funcionalidad en desarrollo", "Usar Cupón", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void BtnPagoTarjeta_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Funcionalidad en desarrollo", "Pago con Tarjeta", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void BtnTransferencia_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Funcionalidad en desarrollo", "Transferencia Bancaria", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void BtnCancelar_Click(object sender, RoutedEventArgs e)
+        {
+            if (_items.Count > 0)
+            {
+                var result = MessageBox.Show("¿Está seguro que desea cancelar la venta actual?",
+                                           "Cancelar Venta",
+                                           MessageBoxButton.YesNo,
+                                           MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    _items.Clear();
+                    RefrescarGrid();
+                    TxtPago.Clear();
+                    TxtCodigo.Focus();
+                    MessageBox.Show("Venta cancelada", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+            }
+        }
+
+        #endregion
+
         #region Funcionalidad POS Integrada
 
         private void BtnAgregar_Click(object sender, RoutedEventArgs e)
