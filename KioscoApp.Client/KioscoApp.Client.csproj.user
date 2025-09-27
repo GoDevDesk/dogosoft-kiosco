@@ -19,9 +19,6 @@
     <Compile Update="SimpleInputDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="PosWindow.xaml.cs">
-      <SubType>Code</SubType>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Page Update="ProductDialog.xaml">
@@ -37,9 +34,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="SimpleInputDialog.xaml">
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Update="PosWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

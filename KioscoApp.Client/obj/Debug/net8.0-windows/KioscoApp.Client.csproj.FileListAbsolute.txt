@@ -68,8 +68,6 @@ D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\ref\KioscoApp.Client.dll
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\SimpleInputDialog.baml
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\SimpleInputDialog.g.cs
-D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\PosWindow.baml
-D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\PosWindow.g.cs
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\SalesHistoryWindow.baml
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\SalesHistoryWindow.g.cs
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\SaleDetailsWindow.baml
@@ -160,3 +158,4 @@ D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\bin\Debug\net8.0-windows
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\bin\Debug\net8.0-windows\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\bin\Debug\net8.0-windows\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\GeneratedInternalTypeHelper.g.cs
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\KioscoApp.Client.sourcelink.json
