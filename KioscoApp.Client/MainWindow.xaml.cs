@@ -28,6 +28,9 @@ namespace KioscoApp.Client
             TxtLicense.Text = $"Licencia: {lic.Type}";
             TxtExpires.Text = lic.Expiry.HasValue ? $"Expira: {lic.Expiry.Value.ToShortDateString()}" : string.Empty;
 
+            // Inicializar fecha actual
+            DpFecha.SelectedDate = DateTime.Now;
+
             RefrescarGrid();
         }
 
@@ -47,7 +50,20 @@ namespace KioscoApp.Client
             // Limpiar venta actual
             _items.Clear();
             RefrescarGrid();
-            TxtPago.Clear();
+
+            // Limpiar datos del cliente (mantener consumidor final)
+            TxtCliente.Text = "Consumidor Final";
+            TxtTelefono.Clear();
+            TxtDomicilio.Clear();
+            TxtLocalidad.Clear();
+            CmbCondicionIva.SelectedIndex = 0;
+
+            // Limpiar observaciones
+            TxtObservaciones.Clear();
+
+            // Reiniciar fecha
+            DpFecha.SelectedDate = DateTime.Now;
+
             TxtCodigo.Focus();
         }
 
@@ -131,7 +147,6 @@ namespace KioscoApp.Client
                 {
                     _items.Clear();
                     RefrescarGrid();
-                    TxtPago.Clear();
                     TxtCodigo.Focus();
                     MessageBox.Show("Venta cancelada", "Información", MessageBoxButton.OK, MessageBoxImage.Information);
                 }
@@ -206,8 +221,13 @@ namespace KioscoApp.Client
             GridVenta.ItemsSource = null;
             GridVenta.ItemsSource = _items;
 
-            var total = _items.Sum(i => i.Subtotal);
-            TxtTotalGrande.Text = total.ToString("C");
+            var subtotal = _items.Sum(i => i.Subtotal);
+            var descuento = 0m; // Por ahora sin descuentos
+            var total = subtotal - descuento;
+
+            TxtSubtotal.Text = subtotal.ToString("C");
+            TxtDescuento.Text = descuento.ToString("C");
+            TxtTotal.Text = total.ToString("C");
 
             // Habilitar o deshabilitar botón cobrar
             BtnCobrar.IsEnabled = _items.Count > 0;
@@ -222,20 +242,10 @@ namespace KioscoApp.Client
 
         private void BtnCobrar_Click(object sender, RoutedEventArgs e)
         {
-            decimal pago = 0;
-            decimal.TryParse(TxtPago.Text, out pago);
+            if (_items.Count == 0)
+                return;
 
             var total = _items.Sum(i => i.Subtotal);
-
-            // Si TxtPago está vacío se toma como pago exacto
-            if (pago == 0)
-                pago = total;
-
-            if (pago < total)
-            {
-                MessageBox.Show("Pago insuficiente", "Error", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return;
-            }
 
             using var ctx = new AppDbContext();
 
@@ -250,13 +260,12 @@ namespace KioscoApp.Client
                 }
             }
 
-            var vuelto = pago - total;
-
+            // Crear la venta
             var sale = new Sale
             {
-                Date = DateTime.Now,
+                Date = DpFecha.SelectedDate ?? DateTime.Now,
                 Total = total,
-                SaleType = "Interna",
+                SaleType = CmbTipoTicket.Text,
                 User = Environment.UserName,
                 Items = _items.Select(i => new SaleItem
                 {
@@ -279,14 +288,13 @@ namespace KioscoApp.Client
 
             ctx.SaveChanges();
 
-            _items.Clear();
-            RefrescarGrid();
-            TxtPago.Clear();
-
             // Mostrar mensaje de éxito
-            MessageBox.Show($"Venta registrada correctamente.\nVuelto: {vuelto:C}", "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+            var clienteInfo = TxtCliente.Text != "Consumidor Final" ? $"\nCliente: {TxtCliente.Text}" : "";
+            MessageBox.Show($"Venta registrada correctamente.{clienteInfo}\nTotal: {total:C}\nTipo: {CmbTipoTicket.Text}",
+                           "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
 
-            TxtCodigo.Focus();
+            // Limpiar para nueva venta
+            BtnNuevaVenta_Click(sender, e);
         }
 
         private void BtnEliminar_Click(object sender, RoutedEventArgs e)
@@ -313,7 +321,34 @@ namespace KioscoApp.Client
 
                 if (int.TryParse(input, out int nuevaCantidad) && nuevaCantidad > 0)
                 {
+                    if (nuevaCantidad > selectedItem.StockDisponible)
+                    {
+                        MessageBox.Show($"Cantidad excede el stock disponible ({selectedItem.StockDisponible})");
+                        return;
+                    }
                     selectedItem.Cantidad = nuevaCantidad;
+                    RefrescarGrid();
+                }
+            }
+        }
+
+        private void BtnRecargo_Click(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Funcionalidad en desarrollo", "Aplicar Recargo", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void BtnCambiarPrecio_Click(object sender, RoutedEventArgs e)
+        {
+            if (GridVenta.SelectedItem is ItemVenta selectedItem)
+            {
+                var input = Microsoft.VisualBasic.Interaction.InputBox(
+                    $"Ingrese nuevo precio para {selectedItem.Name}:",
+                    "Cambiar Precio",
+                    selectedItem.Precio.ToString());
+
+                if (decimal.TryParse(input, out decimal nuevoPrecio) && nuevoPrecio > 0)
+                {
+                    selectedItem.Precio = nuevoPrecio;
                     RefrescarGrid();
                 }
             }
@@ -324,10 +359,26 @@ namespace KioscoApp.Client
             // Resaltar fila seleccionada - ya manejado por el DataGrid
         }
 
+        #endregion
+
+        #region Datos del Cliente
+
+        private void BtnCambiarCliente_Click(object sender, RoutedEventArgs e)
+        {
+            // Aquí podrías abrir un diálogo para seleccionar cliente
+            // Por ahora, mensaje de desarrollo
+            MessageBox.Show("Aquí se abriría un diálogo para seleccionar cliente de la base de datos",
+                           "Cambiar Cliente", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        #endregion
+
+        #region Atajos de Teclado
+
         private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            // Ctrl+Enter para cobrar
-            if (e.Key == Key.Enter && (Keyboard.Modifiers & ModifierKeys.Control) == ModifierKeys.Control)
+            // F1 para cobrar
+            if (e.Key == Key.F1)
             {
                 if (_items.Count > 0)
                     BtnCobrar_Click(sender, e);
@@ -346,13 +397,6 @@ namespace KioscoApp.Client
                 e.Handled = true;
             }
 
-            // F1 para nueva venta
-            if (e.Key == Key.F1)
-            {
-                BtnNuevaVenta_Click(sender, e);
-                e.Handled = true;
-            }
-
             // F2 para productos
             if (e.Key == Key.F2)
             {
@@ -364,6 +408,27 @@ namespace KioscoApp.Client
             if (e.Key == Key.F3)
             {
                 BtnHistorialVentas_Click(sender, e);
+                e.Handled = true;
+            }
+
+            // F4 para nueva venta
+            if (e.Key == Key.F4)
+            {
+                BtnNuevaVenta_Click(sender, e);
+                e.Handled = true;
+            }
+
+            // F5 para cambiar cliente
+            if (e.Key == Key.F5)
+            {
+                BtnCambiarCliente_Click(sender, e);
+                e.Handled = true;
+            }
+
+            // Enter en campo código
+            if (e.Key == Key.Enter && TxtCodigo.IsFocused)
+            {
+                AgregarProducto();
                 e.Handled = true;
             }
         }

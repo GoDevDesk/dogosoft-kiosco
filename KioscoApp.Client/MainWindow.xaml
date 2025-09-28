@@ -134,10 +134,12 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <!-- Buscador -->
-                        <RowDefinition Height="*"/>
-                        <!-- Lista de ítems -->
+                        <RowDefinition Height="1*"/>
+                        <!-- Lista de ítems (reducida) -->
                         <RowDefinition Height="Auto"/>
                         <!-- Botones de acción -->
+                        <RowDefinition Height="1.2*"/>
+                        <!-- Nueva sección: Datos del comprobante y cliente (más grande) -->
                     </Grid.RowDefinitions>
 
                     <!-- Buscador -->
@@ -175,68 +177,229 @@
                     </DataGrid>
 
                     <!-- Botones de acción -->
-                    <StackPanel Grid.Row="2" Orientation="Horizontal">
+                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,15">
                         <Button Content="Eliminar Ítem" Click="BtnEliminar_Click" 
                                 Width="120" Height="35" Margin="0,0,10,0"/>
                         <Button Content="Modificar Cantidad" Click="BtnModificarCantidad_Click" 
-                                Width="140" Height="35"/>
+                                Width="140" Height="35" Margin="0,0,10,0"/>
+                        <Button Content="Recargo" Click="BtnRecargo_Click" 
+                                Width="80" Height="35" Margin="0,0,10,0"/>
+                        <Button Content="Cambiar Precio" Click="BtnCambiarPrecio_Click" 
+                                Width="120" Height="35"/>
                     </StackPanel>
+
+                    <!-- NUEVA SECCIÓN: DATOS DEL COMPROBANTE Y CLIENTE -->
+                    <Grid Grid.Row="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <!-- Datos del comprobante -->
+                            <RowDefinition Height="1*"/>
+                            <!-- Datos del cliente -->
+                        </Grid.RowDefinitions>
+
+                        <!-- DATOS DEL COMPROBANTE -->
+                        <Border Grid.Row="0" Background="#F8F9FA" BorderBrush="#3498DB" BorderThickness="2" 
+                                Margin="0,0,0,5" CornerRadius="5">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Text="DATOS DEL COMPROBANTE" FontSize="14" FontWeight="Bold" 
+                                           Foreground="#2C3E50" Margin="0,0,0,8"/>
+
+                                <!-- Primera fila: Fecha, Tipo, Número -->
+                                <Grid Grid.Row="1" Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <!-- Fecha -->
+                                    <TextBlock Grid.Column="0" Text="Fecha:" VerticalAlignment="Center" 
+                                               Margin="0,0,8,0" FontWeight="Bold" FontSize="12"/>
+                                    <DatePicker x:Name="DpFecha" Grid.Column="1" 
+                                                Margin="0,0,10,0" VerticalAlignment="Center"
+                                                BorderBrush="#3498DB" BorderThickness="1" Height="25"/>
+
+                                    <!-- Tipo de Ticket -->
+                                    <TextBlock Grid.Column="2" Text="Tipo:" VerticalAlignment="Center" 
+                                               Margin="0,0,8,0" FontWeight="Bold" FontSize="12"/>
+                                    <ComboBox x:Name="CmbTipoTicket" Grid.Column="3" 
+                                              Margin="0,0,10,0" VerticalAlignment="Center"
+                                              BorderBrush="#3498DB" BorderThickness="1" Height="25">
+                                        <ComboBoxItem Content="Ticket" IsSelected="True"/>
+                                        <ComboBoxItem Content="Factura A"/>
+                                        <ComboBoxItem Content="Factura B"/>
+                                        <ComboBoxItem Content="Factura C"/>
+                                    </ComboBox>
+
+                                    <!-- Número -->
+                                    <TextBlock Grid.Column="4" Text="Nro:" VerticalAlignment="Center" 
+                                               Margin="0,0,8,0" FontWeight="Bold" FontSize="12"/>
+                                    <ComboBox x:Name="CmbNumero" Grid.Column="5" 
+                                              VerticalAlignment="Center" IsEditable="True"
+                                              BorderBrush="#3498DB" BorderThickness="1" Height="25">
+                                        <ComboBoxItem Content="0001-00000001"/>
+                                        <ComboBoxItem Content="0001-00000002"/>
+                                        <ComboBoxItem Content="0001-00000003"/>
+                                    </ComboBox>
+                                </Grid>
+
+                                <!-- Segunda fila: Observaciones -->
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Text="Observaciones:" VerticalAlignment="Top" 
+                                               Margin="0,5,8,0" FontWeight="Bold" FontSize="12"/>
+                                    <TextBox x:Name="TxtObservaciones" Grid.Column="1" 
+                                             MinHeight="40" MaxHeight="60" TextWrapping="Wrap" AcceptsReturn="True"
+                                             VerticalScrollBarVisibility="Auto"
+                                             BorderBrush="#3498DB" BorderThickness="1"
+                                             VerticalContentAlignment="Top"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+
+                        <!-- DATOS DEL CLIENTE -->
+                        <Border Grid.Row="1" Background="#F8F9FA" BorderBrush="#3498DB" BorderThickness="2" 
+                                Margin="0,5,0,0" CornerRadius="5">
+                            <Grid Margin="10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+                                    <TextBlock Text="DATOS DEL CLIENTE" FontSize="14" FontWeight="Bold" 
+                                               Foreground="#2C3E50"/>
+                                    <Button x:Name="BtnCambiarCliente" Content="Cambiar Cliente" 
+                                            Click="BtnCambiarCliente_Click"
+                                            Height="22" Width="110" FontSize="10" Margin="15,0,0,0"
+                                            Background="#3498DB" Foreground="White" BorderThickness="0"/>
+                                </StackPanel>
+
+                                <!-- Primera fila: Sr/a y Teléfono -->
+                                <Grid Grid.Row="1" Margin="0,0,0,8">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="1.5*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Text="Sr/a:" VerticalAlignment="Center" 
+                                               Margin="0,0,8,0" FontWeight="Bold" FontSize="12"/>
+                                    <TextBox x:Name="TxtCliente" Grid.Column="1" 
+                                             Margin="0,0,10,0" VerticalAlignment="Center" Text="Consumidor Final"
+                                             BorderBrush="#3498DB" BorderThickness="1" Height="25"/>
+
+                                    <TextBlock Grid.Column="2" Text="Teléfono:" VerticalAlignment="Center" 
+                                               Margin="0,0,8,0" FontWeight="Bold" FontSize="12"/>
+                                    <TextBox x:Name="TxtTelefono" Grid.Column="3" 
+                                             VerticalAlignment="Center"
+                                             BorderBrush="#3498DB" BorderThickness="1" Height="25"/>
+                                </Grid>
+
+                                <!-- Segunda fila: Domicilio, Condición IVA, Localidad -->
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="1.2*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="1*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="1*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <TextBlock Grid.Column="0" Text="Domicilio:" VerticalAlignment="Center" 
+                                               Margin="0,0,8,0" FontWeight="Bold" FontSize="12"/>
+                                    <TextBox x:Name="TxtDomicilio" Grid.Column="1" 
+                                             Margin="0,0,10,0" VerticalAlignment="Center"
+                                             BorderBrush="#3498DB" BorderThickness="1" Height="25"/>
+
+                                    <TextBlock Grid.Column="2" Text="Cond.IVA:" VerticalAlignment="Center" 
+                                               Margin="0,0,8,0" FontWeight="Bold" FontSize="12"/>
+                                    <ComboBox x:Name="CmbCondicionIva" Grid.Column="3" 
+                                              VerticalAlignment="Center" Margin="0,0,10,0"
+                                              BorderBrush="#3498DB" BorderThickness="1" Height="25">
+                                        <ComboBoxItem Content="Consumidor Final" IsSelected="True"/>
+                                        <ComboBoxItem Content="Responsable Inscripto"/>
+                                        <ComboBoxItem Content="Exento"/>
+                                        <ComboBoxItem Content="Monotributista"/>
+                                    </ComboBox>
+
+                                    <TextBlock Grid.Column="4" Text="Localidad:" VerticalAlignment="Center" 
+                                               Margin="0,0,8,0" FontWeight="Bold" FontSize="12"/>
+                                    <TextBox x:Name="TxtLocalidad" Grid.Column="5" 
+                                             VerticalAlignment="Center"
+                                             BorderBrush="#3498DB" BorderThickness="1" Height="25"/>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Grid>
                 </Grid>
             </Border>
 
             <!-- LADO DERECHO - DIVIDIDO EN DOS PARTES -->
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <!-- Parte superior - Área de cobro (un poco más espacio) -->
+                    <!-- Parte superior - Área de cobro -->
                     <RowDefinition Height="1.3*"/>
-                    <!-- Parte inferior - Botones y logo (menos espacio para botones, más para logo) -->
+                    <!-- Parte inferior - Botones y logo -->
                     <RowDefinition Height="2.7*"/>
                 </Grid.RowDefinitions>
 
-                <!-- PARTE SUPERIOR - ÁREA DE COBRO (MÁS ESPACIO) -->
+                <!-- PARTE SUPERIOR - ÁREA DE COBRO -->
                 <Border Grid.Row="0" Background="Black">
                     <Grid Margin="10">
                         <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto"/>
-                            <!-- Título -->
                             <RowDefinition Height="*"/>
-                            <!-- Total -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Pago -->
-                            <RowDefinition Height="Auto"/>
-                            <!-- Botón -->
                         </Grid.RowDefinitions>
 
-                        <!-- TÍTULO -->
-                        <TextBlock Grid.Row="0" Text="TOTAL A COBRAR" 
-                                   Foreground="#3498DB" FontSize="16" FontWeight="Bold" 
-                                   HorizontalAlignment="Center" Margin="0,10,0,10"/>
+                        <!-- SECCIÓN DE MONTOS -->
+                        <Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
 
-                        <!-- TOTAL (MÁS ESPACIO PARA NO CORTARSE) -->
-                        <Viewbox Grid.Row="1" StretchDirection="DownOnly" Stretch="Uniform" Margin="5">
-                            <TextBlock x:Name="TxtTotalGrande" Text="$0.00" 
-                                       Foreground="#3498DB" FontSize="40" FontWeight="Bold" 
-                                       HorizontalAlignment="Center" VerticalAlignment="Center"
-                                       FontFamily="Consolas"/>
-                        </Viewbox>
+                            <!-- IZQUIERDA: etiquetas -->
+                            <Grid Grid.Column="0" VerticalAlignment="Stretch" Height="100">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <TextBlock Grid.Row="0" Text="Subtotal:" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock Grid.Row="1" Text="Descuento:" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
+                                <TextBlock Grid.Row="3" Text="Total:" Foreground="White" FontSize="16" FontWeight="Bold"/>
+                            </Grid>
 
-                        <!-- CAMPO PAGO -->
-                        <StackPanel Grid.Row="2" Margin="10,10">
-                            <TextBlock Text="Monto recibido:" 
-                                       Foreground="White" FontSize="12" FontWeight="Bold" 
-                                       HorizontalAlignment="Center" Margin="0,0,0,8"/>
+                            <!-- DERECHA: valores -->
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
+                                <TextBlock x:Name="TxtSubtotal" Text="$0.00" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,5" HorizontalAlignment="Right"/>
+                                <TextBlock x:Name="TxtDescuento" Text="$0.00" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,5" HorizontalAlignment="Right"/>
+                                <TextBlock x:Name="TxtTotal" Text="$0.00" Foreground="#3498DB" FontSize="36" FontWeight="Bold"/>
+                            </StackPanel>
+                        </Grid>
 
-                            <TextBox x:Name="TxtPago" Height="35" FontSize="14"
-                                     ToolTip="Monto pagado por el cliente"
-                                     HorizontalContentAlignment="Center"
-                                     VerticalContentAlignment="Center"
-                                     FontFamily="Consolas"/>
-                        </StackPanel>
-
-                        <!-- BOTÓN COBRAR (AZUL CON LETRA BLANCA) -->
-                        <Button x:Name="BtnCobrar" Grid.Row="3" Content="COBRAR" 
+                        <!-- BOTÓN COBRAR -->
+                        <Button x:Name="BtnCobrar" Grid.Row="1" Content="COBRAR F1" 
                                 Click="BtnCobrar_Click"
-                                Height="45" Margin="10,5,10,15"
+                                Height="50" Margin="0,10,0,0"
                                 FontSize="16" FontWeight="Bold"
                                 IsEnabled="False">
                             <Button.Style>
@@ -266,11 +429,8 @@
                     <Grid Margin="15">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <!-- Título -->
                             <RowDefinition Height="1*"/>
-                            <!-- Botones (menos espacio) -->
                             <RowDefinition Height="1.5*"/>
-                            <!-- Logo (más espacio) -->
                         </Grid.RowDefinitions>
 
                         <!-- TÍTULO -->
@@ -279,7 +439,7 @@
                                    Foreground="#2C3E50" HorizontalAlignment="Center" 
                                    Margin="0,10,0,15"/>
 
-                        <!-- BOTONES ADICIONALES (ESTILO MEJORADO) -->
+                        <!-- BOTONES ADICIONALES -->
                         <StackPanel Grid.Row="1" VerticalAlignment="Top">
                             <Button x:Name="BtnDescuento" Content="💰 Aplicar Descuento" 
                                     Height="35" Margin="0,3" FontSize="12" FontWeight="Bold"
@@ -402,11 +562,12 @@
                             </Button>
                         </StackPanel>
 
-                        <!-- LOGO DE LA APLICACIÓN (MÁS GRANDE) -->
+                        <!-- LOGO DE LA APLICACIÓN -->
                         <StackPanel Grid.Row="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0,20">
                             <Border Background="#2C3E50" CornerRadius="12" Padding="25,15">
                                 <StackPanel HorizontalAlignment="Center">
-                                    <TextBlock Text="🏪" FontSize="36" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                    <Image Source="Assets/Logo.png"
+                                           Height="80" Width="80" HorizontalAlignment="Center" Margin="0,0,0,10"/>
                                     <TextBlock Text="MI KIOSCO" FontSize="16" FontWeight="Bold" 
                                                Foreground="White" HorizontalAlignment="Center" Margin="0,0,0,5"/>
                                     <TextBlock Text="Sistema POS Integrado" FontSize="12" 
