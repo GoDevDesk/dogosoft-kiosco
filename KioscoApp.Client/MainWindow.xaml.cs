@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Input;
-using KioscoApp.Core.Data;
+﻿using KioscoApp.Core.Data;
 using KioscoApp.Core.Models;
 using KioscoApp.Core.Services;
+using System.Windows;
+using System.Windows.Input;
 
 namespace KioscoApp.Client
 {
@@ -249,7 +245,7 @@ namespace KioscoApp.Client
 
             using var ctx = new AppDbContext();
 
-            // Validar stock antes de registrar
+            // Validar stock antes de abrir ventana de pago
             foreach (var item in _items)
             {
                 var prod = ctx.Products.FirstOrDefault(p => p.Id == item.ProductId);
@@ -260,42 +256,67 @@ namespace KioscoApp.Client
                 }
             }
 
-            // Crear la venta
-            var sale = new Sale
+            // Abrir ventana modal de pago
+            var paymentWindow = new PaymentWindow(total);
+            paymentWindow.Owner = this;
+
+            var result = paymentWindow.ShowDialog();
+
+            if (result == true && paymentWindow.PagoConfirmado)
             {
-                Date = DpFecha.SelectedDate ?? DateTime.Now,
-                Total = total,
-                SaleType = CmbTipoTicket.Text,
-                User = Environment.UserName,
-                Items = _items.Select(i => new SaleItem
+                // Crear la venta
+                var sale = new Sale
                 {
-                    ProductId = i.ProductId,
-                    Quantity = i.Cantidad,
-                    UnitPrice = i.Precio,
-                    Subtotal = i.Subtotal
-                }).ToList()
-            };
+                    Date = DpFecha.SelectedDate ?? DateTime.Now,
+                    Total = total,
+                    SaleType = CmbTipoTicket.Text,
+                    User = Environment.UserName,
+                    Items = _items.Select(i => new SaleItem
+                    {
+                        ProductId = i.ProductId,
+                        Quantity = i.Cantidad,
+                        UnitPrice = i.Precio,
+                        Subtotal = i.Subtotal
+                    }).ToList()
+                };
 
-            ctx.Sales.Add(sale);
+                ctx.Sales.Add(sale);
 
-            // Actualizar stock
-            foreach (var item in sale.Items)
-            {
-                var prod = ctx.Products.FirstOrDefault(p => p.Id == item.ProductId);
-                if (prod != null)
-                    prod.Stock -= item.Quantity;
+                // Actualizar stock
+                foreach (var item in sale.Items)
+                {
+                    var prod = ctx.Products.FirstOrDefault(p => p.Id == item.ProductId);
+                    if (prod != null)
+                        prod.Stock -= item.Quantity;
+                }
+
+                ctx.SaveChanges();
+
+                // Calcular vuelto con la nueva lógica
+                var vuelto = paymentWindow.TotalPagado - total;
+
+                // Preparar info de métodos de pago
+                string pagosDetalle =
+                    $"Efectivo: {paymentWindow.Efectivo:C}\n" +
+                    $"Tarjeta: {paymentWindow.TarjetaCredito:C}\n" +
+                    $"Cuenta Corriente: {paymentWindow.CuentaCorriente:C}\n" +
+                    $"Cheque: {paymentWindow.Cheque:C}\n" +
+                    $"Tickets: {paymentWindow.Tickets:C}";
+
+                // Mostrar mensaje de éxito
+                var clienteInfo = TxtCliente.Text != "Consumidor Final" ? $"\nCliente: {TxtCliente.Text}" : "";
+                MessageBox.Show($"✓ Venta registrada correctamente{clienteInfo}\n" +
+                               $"Total: {total:C}\n" +
+                               $"Pagado: {paymentWindow.TotalPagado:C}\n" +
+                               $"{pagosDetalle}\n" +
+                               $"Vuelto: {vuelto:C}",
+                               "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
+
+                // Limpiar para nueva venta
+                BtnNuevaVenta_Click(sender, e);
             }
-
-            ctx.SaveChanges();
-
-            // Mostrar mensaje de éxito
-            var clienteInfo = TxtCliente.Text != "Consumidor Final" ? $"\nCliente: {TxtCliente.Text}" : "";
-            MessageBox.Show($"Venta registrada correctamente.{clienteInfo}\nTotal: {total:C}\nTipo: {CmbTipoTicket.Text}",
-                           "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
-
-            // Limpiar para nueva venta
-            BtnNuevaVenta_Click(sender, e);
         }
+
 
         private void BtnEliminar_Click(object sender, RoutedEventArgs e)
         {
@@ -375,6 +396,32 @@ namespace KioscoApp.Client
 
         #region Atajos de Teclado
 
+        private void BtnVerPrecio_Click(object sender, RoutedEventArgs e)
+        {
+            var input = Microsoft.VisualBasic.Interaction.InputBox(
+                "Ingrese código o nombre del producto:",
+                "Ver Precio",
+                "");
+
+            if (string.IsNullOrWhiteSpace(input))
+                return;
+
+            using var ctx = new AppDbContext();
+            var prod = ctx.Products.FirstOrDefault(p => p.Code == input || p.Name.Contains(input));
+
+            if (prod != null)
+            {
+                MessageBox.Show($"Producto: {prod.Name}\nPrecio: {prod.Price:C}\nStock: {prod.Stock}",
+                               "Información del Producto",
+                               MessageBoxButton.OK,
+                               MessageBoxImage.Information);
+            }
+            else
+            {
+                MessageBox.Show("Producto no encontrado", "Información", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
         private void MainWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
             // F1 para cobrar
@@ -400,14 +447,14 @@ namespace KioscoApp.Client
             // F2 para productos
             if (e.Key == Key.F2)
             {
-                BtnProductos_Click(sender, e);
+                BtnNuevaVenta_Click(sender, e);
                 e.Handled = true;
             }
 
-            // F3 para historial
+            // F3 para ver precio
             if (e.Key == Key.F3)
             {
-                BtnHistorialVentas_Click(sender, e);
+                BtnVerPrecio_Click(sender, e);
                 e.Handled = true;
             }
 

@@ -158,3 +158,5 @@ D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\bin\Debug\net8.0-windows
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\bin\Debug\net8.0-windows\zh-Hans\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\bin\Debug\net8.0-windows\zh-Hant\Microsoft.CodeAnalysis.Workspaces.MSBuild.BuildHost.resources.dll
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\KioscoApp.Client.sourcelink.json
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\PaymentWindow.baml
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\obj\Debug\net8.0-windows\PaymentWindow.g.cs

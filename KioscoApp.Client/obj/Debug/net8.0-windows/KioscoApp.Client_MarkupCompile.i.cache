@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\App.xaml
-61974498915
+7-1430920186
 
-12-731674503
+13-1542616859
 219-1388090831
-MainWindow.xaml;ProductDialog.xaml;ProductsWindow.xaml;SaleDetailsWindow.xaml;SalesHistoryWindow.xaml;SimpleInputDialog.xaml;
+MainWindow.xaml;PaymentWindow.xaml;ProductDialog.xaml;ProductsWindow.xaml;SaleDetailsWindow.xaml;SalesHistoryWindow.xaml;SimpleInputDialog.xaml;
 
-False
+True
 
