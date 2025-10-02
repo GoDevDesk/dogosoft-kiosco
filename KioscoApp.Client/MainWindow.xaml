@@ -12,108 +12,37 @@
         </Grid.RowDefinitions>
 
         <!-- MENU SUPERIOR -->
-        <Border Grid.Row="0" Background="#2C3E50" Padding="10">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <Border Grid.Row="0" Background="#2C3E50" Padding="5" Margin="0,0,0,26">
+            <DockPanel LastChildFill="True">
+                <!-- Menú de la izquierda -->
+                <Menu DockPanel.Dock="Left" Background="Transparent" Foreground="White" 
+              FontSize="13" FontWeight="Bold">
+                    <MenuItem Header="🛒 Nueva Venta" Click="BtnNuevaVenta_Click"/>
+                    <MenuItem Header="📦 Artículos">
+                        <MenuItem Header="➕ Nuevo Artículo" Click="BtnNuevoArticulo_Click"/>
+                        <MenuItem Header="✏️ Editar Artículo" Click="BtnEditarArticulo_Click"/>
+                        <MenuItem Header="📋 Ver Artículos" Click="BtnVerArticulos_Click"/>
+                    </MenuItem>
+                    <MenuItem Header="📊 Historial" Click="BtnHistorialVentas_Click"/>
+                    <MenuItem Header="📈 Reportes" Click="BtnReportes_Click" IsEnabled="False"/>
+                    <MenuItem Header="👥 Clientes" Click="BtnClientes_Click" IsEnabled="False"/>
+                    <MenuItem Header="📋 Inventario" Click="BtnInventario_Click" IsEnabled="False"/>
+                    <MenuItem Header="⚙️ Configuración" Click="BtnConfiguracion_Click" IsEnabled="False"/>
+                </Menu>
 
-                <WrapPanel Grid.Column="0" VerticalAlignment="Center">
-                    <Button x:Name="BtnNuevaVenta" Content="🛒 Nueva Venta" 
-                            Background="Transparent" Foreground="White" BorderThickness="0" 
-                            Padding="15,8" Margin="5,0" FontSize="14" FontWeight="Bold" Cursor="Hand"
-                            Click="BtnNuevaVenta_Click" IsEnabled="True">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#34495E"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <Button x:Name="BtnProductos" Content="📦 Productos" 
-                            Background="Transparent" Foreground="White" BorderThickness="0" 
-                            Padding="15,8" Margin="5,0" FontSize="14" FontWeight="Bold" Cursor="Hand"
-                            Click="BtnProductos_Click">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#34495E"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <Button x:Name="BtnHistorialVentas" Content="📊 Historial" 
-                            Background="Transparent" Foreground="White" BorderThickness="0" 
-                            Padding="15,8" Margin="5,0" FontSize="14" FontWeight="Bold" Cursor="Hand"
-                            Click="BtnHistorialVentas_Click">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#34495E"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
-
-                    <Button x:Name="BtnReportes" Content="📈 Reportes" 
-                            Background="Transparent" Foreground="#7F8C8D" BorderThickness="0" 
-                            Padding="15,8" Margin="5,0" FontSize="14" FontWeight="Bold"
-                            Click="BtnReportes_Click" IsEnabled="False"/>
-
-                    <Button x:Name="BtnClientes" Content="👥 Clientes" 
-                            Background="Transparent" Foreground="#7F8C8D" BorderThickness="0" 
-                            Padding="15,8" Margin="5,0" FontSize="14" FontWeight="Bold"
-                            Click="BtnClientes_Click" IsEnabled="False"/>
-
-                    <Button x:Name="BtnInventario" Content="📋 Inventario" 
-                            Background="Transparent" Foreground="#7F8C8D" BorderThickness="0" 
-                            Padding="15,8" Margin="5,0" FontSize="14" FontWeight="Bold"
-                            Click="BtnInventario_Click" IsEnabled="False"/>
-
-                    <Button x:Name="BtnConfiguracion" Content="⚙️ Configuración" 
-                            Background="Transparent" Foreground="#7F8C8D" BorderThickness="0" 
-                            Padding="15,8" Margin="5,0" FontSize="14" FontWeight="Bold"
-                            Click="BtnConfiguracion_Click" IsEnabled="False"/>
-                </WrapPanel>
-
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Licencia a la derecha -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" Width="342">
                     <TextBlock x:Name="TxtLicense" Foreground="White" FontWeight="Bold" Margin="0,0,10,0"/>
                     <TextBlock x:Name="TxtExpires" Foreground="#BDC3C7" VerticalAlignment="Center" Margin="0,0,10,0"/>
                     <Button Content="🔑 Licencia" 
-                            Background="Transparent" Foreground="White" BorderThickness="0" 
-                            Padding="15,8" Margin="5,0" FontSize="14" FontWeight="Bold" Cursor="Hand"
-                            Click="BtnIngresarClave_Click">
-                        <Button.Style>
-                            <Style TargetType="Button">
-                                <Setter Property="Background" Value="Transparent"/>
-                                <Setter Property="Foreground" Value="White"/>
-                                <Style.Triggers>
-                                    <Trigger Property="IsMouseOver" Value="True">
-                                        <Setter Property="Background" Value="#34495E"/>
-                                    </Trigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                    </Button>
+                    Background="Transparent" Foreground="White" BorderThickness="0" 
+                    Padding="10,0" FontSize="13" FontWeight="Bold" Cursor="Hand"
+                    Click="BtnIngresarClave_Click"/>
                 </StackPanel>
-            </Grid>
+            </DockPanel>
         </Border>
+
+
 
         <!-- CONTENIDO PRINCIPAL -->
         <Grid Grid.Row="1">
@@ -123,7 +52,7 @@
             </Grid.ColumnDefinitions>
 
             <!-- LADO IZQUIERDO - POS INTEGRADO -->
-            <Border Grid.Column="0" Background="White" BorderBrush="#BDC3C7" BorderThickness="0,0,1,0">
+            <Border Grid.Column="0" Background="White" BorderBrush="#BDC3C7" BorderThickness="0,0,1,0" Margin="0,-20,0,0">
                 <Grid Margin="15">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -152,10 +81,10 @@
                     </StackPanel>
 
                     <!-- DataGrid -->
-                    <DataGrid x:Name="GridVenta" Grid.Row="1" AutoGenerateColumns="False"
+                    <DataGrid x:Name="GridVenta" AutoGenerateColumns="False"
                               CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
-                              SelectionUnit="FullRow" Margin="0,0,0,15"
-                              SelectionChanged="GridVenta_SelectionChanged">
+                              SelectionUnit="FullRow" Margin="0,78,0,15"
+                              SelectionChanged="GridVenta_SelectionChanged" Grid.RowSpan="2">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Producto" Binding="{Binding Name}" Width="*"/>
                             <DataGridTextColumn Header="Cant." Binding="{Binding Cantidad}" Width="60"/>

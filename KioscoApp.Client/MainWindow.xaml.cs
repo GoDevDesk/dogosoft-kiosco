@@ -480,6 +480,29 @@ namespace KioscoApp.Client
             }
         }
 
+        private void BtnNuevoArticulo_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new ProductDialog();
+            if (dlg.ShowDialog() == true)
+            {
+                // no hace falta nada más, ProductDialog guarda directo en DB
+            }
+        }
+
+        private void BtnEditarArticulo_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new ProductsWindow();
+            win.ShowDialog();
+            // ahí el usuario selecciona un producto y hace clic en "Modificar"
+        }
+
+        private void BtnVerArticulos_Click(object sender, RoutedEventArgs e)
+        {
+            var win = new ProductsWindow();
+            win.ShowDialog();
+        }
+
+
         #endregion
     }
 
