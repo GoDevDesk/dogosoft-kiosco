@@ -7,6 +7,7 @@ D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Debug\net8.0\KioscoApp
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Debug\net8.0\KioscoApp.Core.AssemblyInfoInputs.cache
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Debug\net8.0\KioscoApp.Core.AssemblyInfo.cs
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Debug\net8.0\KioscoApp.Core.csproj.CoreCompileInputs.cache
+D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Debug\net8.0\KioscoApp.Core.sourcelink.json
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Debug\net8.0\KioscoApp.Core.dll
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Debug\net8.0\refint\KioscoApp.Core.dll
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Core\obj\Debug\net8.0\KioscoApp.Core.pdb
