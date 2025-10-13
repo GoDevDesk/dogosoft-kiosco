@@ -1,6 +1,7 @@
 ﻿using KioscoApp.Core.Data;
 using KioscoApp.Core.Models;
 using KioscoApp.Core.Services;
+using Microsoft.EntityFrameworkCore;
 using System.Windows;
 using System.Windows.Input;
 
@@ -10,12 +11,108 @@ namespace KioscoApp.Client
     {
         private readonly LicenseService _licenseSvc = new LicenseService();
         private List<ItemVenta> _items = new();
+        private int _listaPrecionId = 1; // ID de la lista de precios a usar (por defecto: Lista General)
+        private decimal _descuentoRecargo = 0m; // Positivo = recargo, Negativo = descuento
+
 
         public MainWindow()
         {
             InitializeComponent();
+            CargarListasDePrecios(); // NUEVO: Cargar listas antes de LoadData
             LoadData();
             InitializePosIntegration();
+        }
+
+        private void BtnVerListasPrecios_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new PriceListsWindow();
+            window.ShowDialog();
+        }
+
+        private void BtnNuevaListaPrecios_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new PriceListDialog();
+            if (dialog.ShowDialog() == true)
+            {
+                // Recargar listas en el combo
+                CargarListasDePrecios();
+            }
+        }
+
+        private void CargarListasDePrecios()
+        {
+            using var ctx = new AppDbContext();
+            var listas = ctx.PriceLists
+                .Where(pl => pl.IsActive)
+                .OrderBy(pl => pl.Name)
+                .ToList();
+
+            CmbListaPrecios.ItemsSource = listas;
+
+            // Seleccionar la primera lista por defecto
+            if (listas.Count > 0)
+            {
+                CmbListaPrecios.SelectedIndex = 0;
+                _listaPrecionId = listas[0].Id;
+            }
+        }
+
+        private void CmbListaPrecios_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (CmbListaPrecios.SelectedValue == null)
+                return;
+
+            var nuevaListaId = (int)CmbListaPrecios.SelectedValue;
+
+            // Si hay productos en la grilla, preguntar antes de cambiar
+            if (_items.Count > 0 && nuevaListaId != _listaPrecionId)
+            {
+                var result = MessageBox.Show(
+                    "Al cambiar la lista de precios se actualizarán los precios de los productos en la venta actual.\n\n¿Desea continuar?",
+                    "Confirmar cambio de lista",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.No)
+                {
+                    // Revertir la selección
+                    CmbListaPrecios.SelectedValue = _listaPrecionId;
+                    return;
+                }
+
+                // Actualizar precios de productos existentes
+                ActualizarPreciosEnVenta(nuevaListaId);
+            }
+
+            _listaPrecionId = nuevaListaId;
+        }
+
+        private void ActualizarPreciosEnVenta(int nuevaListaId)
+        {
+            using var ctx = new AppDbContext();
+
+            foreach (var item in _items)
+            {
+                var precioLista = ctx.ProductPriceLists
+                    .FirstOrDefault(ppl => ppl.ProductId == item.ProductId && ppl.PriceListId == nuevaListaId);
+
+                if (precioLista != null)
+                {
+                    item.Precio = precioLista.SalePrice;
+                }
+                else
+                {
+                    // Si el producto no tiene precio en la nueva lista, avisar
+                    MessageBox.Show(
+                        $"El producto '{item.Name}' no tiene precio definido en la lista seleccionada.\n\n" +
+                        $"Se mantendrá el precio actual: {item.Precio:C}",
+                        "Sin precio en lista",
+                        MessageBoxButton.OK,
+                        MessageBoxImage.Warning);
+                }
+            }
+
+            RefrescarGrid();
         }
 
         private void LoadData()
@@ -45,6 +142,11 @@ namespace KioscoApp.Client
         {
             // Limpiar venta actual
             _items.Clear();
+            _descuentoRecargo = 0m; // Limpiar descuentos/recargos
+
+            // Resetear color del texto
+            TxtDescuentoRecargo.Foreground = System.Windows.Media.Brushes.White;
+
             RefrescarGrid();
 
             // Limpiar datos del cliente (mantener consumidor final)
@@ -61,6 +163,28 @@ namespace KioscoApp.Client
             DpFecha.SelectedDate = DateTime.Now;
 
             TxtCodigo.Focus();
+        }
+
+        private void BtnRecargo_Click(object sender, RoutedEventArgs e)
+        {
+            if (_items.Count == 0)
+            {
+                MessageBox.Show("Debe agregar productos antes de aplicar recargos.",
+                    "Sin productos",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            var subtotal = _items.Sum(i => i.Subtotal);
+            var dialog = new AdjustmentDialog(subtotal, esDescuento: false);
+            dialog.Owner = this;
+
+            if (dialog.ShowDialog() == true)
+            {
+                _descuentoRecargo += dialog.MontoAjuste; // Sumar recargo
+                RefrescarGrid();
+            }
         }
 
         private void BtnProductos_Click(object sender, RoutedEventArgs e)
@@ -112,7 +236,24 @@ namespace KioscoApp.Client
 
         private void BtnDescuento_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show("Funcionalidad en desarrollo", "Aplicar Descuento", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (_items.Count == 0)
+            {
+                MessageBox.Show("Debe agregar productos antes de aplicar descuentos.",
+                    "Sin productos",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+                return;
+            }
+
+            var subtotal = _items.Sum(i => i.Subtotal);
+            var dialog = new AdjustmentDialog(subtotal, esDescuento: true);
+            dialog.Owner = this;
+
+            if (dialog.ShowDialog() == true)
+            {
+                _descuentoRecargo -= dialog.MontoAjuste; // Restar descuento
+                RefrescarGrid();
+            }
         }
 
         private void BtnCupon_Click(object sender, RoutedEventArgs e)
@@ -170,10 +311,27 @@ namespace KioscoApp.Client
         private void AgregarProducto()
         {
             using var ctx = new AppDbContext();
-            var prod = ctx.Products.FirstOrDefault(p => p.Code == TxtCodigo.Text || p.Name.Contains(TxtCodigo.Text));
+
+            // Buscar producto e incluir sus precios
+            var prod = ctx.Products
+                .Include(p => p.Category)
+                .FirstOrDefault(p => p.Code == TxtCodigo.Text || p.Name.Contains(TxtCodigo.Text));
 
             if (prod == null)
-                return; // no mostrar mensaje innecesario
+            {
+                MostrarMensaje("Producto no encontrado.");
+                return;
+            }
+
+            // MODIFICADO: Obtener el precio de la lista seleccionada
+            var precioLista = ctx.ProductPriceLists
+                .FirstOrDefault(ppl => ppl.ProductId == prod.Id && ppl.PriceListId == _listaPrecionId);
+
+            if (precioLista == null)
+            {
+                MostrarMensaje($"El producto '{prod.Name}' no tiene precio en la lista seleccionada.");
+                return;
+            }
 
             var item = _items.FirstOrDefault(i => i.ProductId == prod.Id);
 
@@ -199,7 +357,7 @@ namespace KioscoApp.Client
                     ProductId = prod.Id,
                     Name = prod.Name,
                     Cantidad = 1,
-                    Precio = prod.Price,
+                    Precio = precioLista.SalePrice, // Usar precio de la lista seleccionada
                     StockDisponible = prod.Stock
                 });
             }
@@ -218,11 +376,29 @@ namespace KioscoApp.Client
             GridVenta.ItemsSource = _items;
 
             var subtotal = _items.Sum(i => i.Subtotal);
-            var descuento = 0m; // Por ahora sin descuentos
-            var total = subtotal - descuento;
+            var total = subtotal + _descuentoRecargo;
 
             TxtSubtotal.Text = subtotal.ToString("C");
-            TxtDescuento.Text = descuento.ToString("C");
+
+            // Mostrar descuento/recargo acumulado
+            if (_descuentoRecargo == 0)
+            {
+                TxtDescuentoRecargo.Text = "$0.00";
+                TxtDescuentoRecargo.Foreground = System.Windows.Media.Brushes.White;
+            }
+            else if (_descuentoRecargo < 0)
+            {
+                TxtDescuentoRecargo.Text = $"-{Math.Abs(_descuentoRecargo):C}";
+                TxtDescuentoRecargo.Foreground = new System.Windows.Media.SolidColorBrush(
+                    System.Windows.Media.Color.FromRgb(230, 126, 34)); // Naranja para descuento
+            }
+            else
+            {
+                TxtDescuentoRecargo.Text = $"+{_descuentoRecargo:C}";
+                TxtDescuentoRecargo.Foreground = new System.Windows.Media.SolidColorBrush(
+                    System.Windows.Media.Color.FromRgb(39, 174, 96)); // Verde para recargo
+            }
+
             TxtTotal.Text = total.ToString("C");
 
             // Habilitar o deshabilitar botón cobrar
@@ -282,12 +458,34 @@ namespace KioscoApp.Client
 
                 ctx.Sales.Add(sale);
 
-                // Actualizar stock
-                foreach (var item in sale.Items)
+                // NUEVO: Crear movimientos de stock por cada item vendido
+                var fechaVenta = DpFecha.SelectedDate ?? DateTime.Now;
+                var usuario = Environment.UserName;
+                var numeroVenta = $"{CmbTipoTicket.Text} - Cliente: {TxtCliente.Text}";
+
+                foreach (var item in _items)
                 {
+                    // Actualizar stock del producto
                     var prod = ctx.Products.FirstOrDefault(p => p.Id == item.ProductId);
                     if (prod != null)
-                        prod.Stock -= item.Quantity;
+                    {
+                        prod.Stock -= item.Cantidad;
+
+                        // Registrar movimiento de stock negativo (venta)
+                        var movimiento = new StockMovement
+                        {
+                            ProductId = item.ProductId,
+                            SupplierId = null, // Las ventas no tienen proveedor
+                            MovementType = "Venta",
+                            Quantity = -item.Cantidad, // Negativo porque sale del inventario
+                            Cost = null, // Las ventas no tienen costo, tienen precio de venta
+                            Reason = $"Venta - {numeroVenta}",
+                            Date = fechaVenta,
+                            User = usuario
+                        };
+
+                        ctx.StockMovements.Add(movimiento);
+                    }
                 }
 
                 ctx.SaveChanges();
@@ -309,7 +507,8 @@ namespace KioscoApp.Client
                                $"Total: {total:C}\n" +
                                $"Pagado: {paymentWindow.TotalPagado:C}\n" +
                                $"{pagosDetalle}\n" +
-                               $"Vuelto: {vuelto:C}",
+                               $"Vuelto: {vuelto:C}\n\n" +
+                               $"Se registraron {_items.Count} movimientos de stock.",
                                "Éxito", MessageBoxButton.OK, MessageBoxImage.Information);
 
                 // Limpiar para nueva venta
@@ -353,11 +552,6 @@ namespace KioscoApp.Client
             }
         }
 
-        private void BtnRecargo_Click(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Funcionalidad en desarrollo", "Aplicar Recargo", MessageBoxButton.OK, MessageBoxImage.Information);
-        }
-
         private void BtnCambiarPrecio_Click(object sender, RoutedEventArgs e)
         {
             if (GridVenta.SelectedItem is ItemVenta selectedItem)
@@ -395,7 +589,6 @@ namespace KioscoApp.Client
         #endregion
 
         #region Atajos de Teclado
-
         private void BtnVerPrecio_Click(object sender, RoutedEventArgs e)
         {
             var input = Microsoft.VisualBasic.Interaction.InputBox(
@@ -411,10 +604,30 @@ namespace KioscoApp.Client
 
             if (prod != null)
             {
-                MessageBox.Show($"Producto: {prod.Name}\nPrecio: {prod.Price:C}\nStock: {prod.Stock}",
-                               "Información del Producto",
-                               MessageBoxButton.OK,
-                               MessageBoxImage.Information);
+                // Obtener precio de la lista actual
+                var precioLista = ctx.ProductPriceLists
+                    .Include(ppl => ppl.PriceList)
+                    .FirstOrDefault(ppl => ppl.ProductId == prod.Id && ppl.PriceListId == _listaPrecionId);
+
+                if (precioLista != null)
+                {
+                    MessageBox.Show($"Producto: {prod.Name}\n" +
+                                  $"Lista: {precioLista.PriceList.Name}\n" +
+                                  $"Precio: {precioLista.SalePrice:C}\n" +
+                                  $"Stock: {prod.Stock}",
+                                   "Información del Producto",
+                                   MessageBoxButton.OK,
+                                   MessageBoxImage.Information);
+                }
+                else
+                {
+                    MessageBox.Show($"Producto: {prod.Name}\n" +
+                                  $"Sin precio en la lista '{CmbListaPrecios.Text}'\n" +
+                                  $"Stock: {prod.Stock}",
+                                   "Información del Producto",
+                                   MessageBoxButton.OK,
+                                   MessageBoxImage.Warning);
+                }
             }
             else
             {
@@ -458,10 +671,10 @@ namespace KioscoApp.Client
                 e.Handled = true;
             }
 
-            // F4 para nueva venta
+            // F4 para búsqueda avanzada
             if (e.Key == Key.F4)
             {
-                BtnNuevaVenta_Click(sender, e);
+                BtnBuscarAvanzado_Click(sender, e);
                 e.Handled = true;
             }
 
@@ -503,7 +716,97 @@ namespace KioscoApp.Client
         }
 
 
+        // Agregar estos métodos en la región "Eventos del Menú" de MainWindow.xaml.cs
+
+        #region Eventos del Menú - Proveedores
+
+        private void BtnNuevoProveedor_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new SupplierDialog();
+            if (dialog.ShowDialog() == true)
+            {
+                MessageBox.Show("Proveedor creado correctamente.", "Éxito",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void BtnVerProveedores_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new SuppliersWindow();
+            window.ShowDialog();
+        }
+
+        private void BtnCargarCompra_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new PurchaseOrderWindow();
+            if (window.ShowDialog() == true)
+            {
+                // Compra guardada exitosamente
+            }
+        }
+
+        private void BtnMovimientosStock_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new StockMovementsWindow();
+            window.ShowDialog();
+        }
+
+        private void BtnAjusteInventario_Click(object sender, RoutedEventArgs e)
+        {
+            var window = new InventoryAdjustmentWindow();
+            window.ShowDialog();
+        }
+
+        private void MenuActualizacionMasivaPrecios_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new PriceUpdateDialog();
+            dialog.ShowDialog();
+        }
+
+        private void BtnBuscarAvanzado_Click(object sender, RoutedEventArgs e)
+        {
+            var dialog = new ProductSearchDialog(_listaPrecionId);
+            dialog.Owner = this;
+
+            if (dialog.ShowDialog() == true)
+            {
+                // Agregar todos los productos seleccionados a la venta
+                foreach (var producto in dialog.ProductosSeleccionados)
+                {
+                    var itemExistente = _items.FirstOrDefault(i => i.ProductId == producto.ProductId);
+
+                    if (itemExistente != null)
+                    {
+                        // Si ya existe, sumar cantidades
+                        itemExistente.Cantidad += producto.Cantidad;
+                    }
+                    else
+                    {
+                        // Agregar nuevo
+                        _items.Add(new ItemVenta
+                        {
+                            ProductId = producto.ProductId,
+                            Name = producto.Name,
+                            Cantidad = producto.Cantidad,
+                            Precio = producto.Price,
+                            StockDisponible = producto.Stock
+                        });
+                    }
+                }
+
+                RefrescarGrid();
+
+                MessageBox.Show(
+                    $"Se agregaron {dialog.ProductosSeleccionados.Count} productos a la venta.",
+                    "Productos agregados",
+                    MessageBoxButton.OK,
+                    MessageBoxImage.Information);
+            }
+        }
+
         #endregion
+        #endregion
+
     }
 
     // Clase ItemVenta para el POS integrado

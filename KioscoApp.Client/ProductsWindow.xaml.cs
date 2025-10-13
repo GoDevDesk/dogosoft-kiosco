@@ -1,5 +1,6 @@
 ﻿using KioscoApp.Core.Data;
 using KioscoApp.Core.Models;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -26,12 +27,15 @@ namespace KioscoApp.Client
 
         private void CargarProductos()
         {
-            if (GridProducts == null) return; // Protección
+            if (GridProducts == null) return;
 
             using var ctx = new AppDbContext();
-            var query = ctx.Products.AsQueryable();
 
-            // Filtrar por texto de búsqueda - CON VALIDACIÓN
+            var query = ctx.Products
+                .Include(p => p.Category)
+                .AsQueryable();
+
+            // Filtrar por texto de búsqueda
             if (TxtBuscar != null && !string.IsNullOrWhiteSpace(TxtBuscar.Text))
             {
                 var textoBusqueda = TxtBuscar.Text.ToLower().Trim();
@@ -40,23 +44,38 @@ namespace KioscoApp.Client
                     p.Name.ToLower().Contains(textoBusqueda));
             }
 
-            // Filtrar por categoría - CON VALIDACIÓN
+            // Filtrar por categoría
             if (CmbCategoria != null && CmbCategoria.SelectedItem != null)
             {
                 var categoriaSeleccionada = (CmbCategoria.SelectedItem as ComboBoxItem)?.Content.ToString();
                 if (!string.IsNullOrEmpty(categoriaSeleccionada) && categoriaSeleccionada != "Todas")
                 {
-                    query = query.Where(p => p.Category == categoriaSeleccionada);
+                    query = query.Where(p => p.Category != null && p.Category.Name == categoriaSeleccionada);
                 }
             }
 
-            // Filtrar por estado (activo/discontinuado)
+            // Filtrar por estado
             if (!_mostrarDiscontinuados)
             {
                 query = query.Where(p => p.IsActive);
             }
 
-            GridProducts.ItemsSource = query.OrderBy(p => p.Name).ToList();
+            var productos = query.OrderBy(p => p.Name).ToList();
+
+            // Obtener la lista de precios "General" (ID = 1)
+            var precios = ctx.ProductPriceLists
+                .Where(ppl => ppl.PriceListId == 1) // Lista General
+                .ToDictionary(ppl => ppl.ProductId, ppl => ppl.SalePrice);
+
+            // Asignar el precio a cada producto
+            foreach (var producto in productos)
+            {
+                producto.DisplayPrice = precios.ContainsKey(producto.Id)
+                    ? precios[producto.Id]
+                    : 0m;
+            }
+
+            GridProducts.ItemsSource = productos;
         }
 
         private void GridProducts_SelectionChanged(object sender, SelectionChangedEventArgs e)

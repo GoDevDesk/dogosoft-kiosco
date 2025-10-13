@@ -10,11 +10,11 @@ none
 false
 TRACE;DEBUG;NET;NET8_0;NETCOREAPP
 D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\App.xaml
-7-1430920186
+18381060844
 
-13-1542616859
+241321187766
 219-1388090831
-MainWindow.xaml;PaymentWindow.xaml;ProductDialog.xaml;ProductsWindow.xaml;SaleDetailsWindow.xaml;SalesHistoryWindow.xaml;SimpleInputDialog.xaml;
+AdjustmentDialog.xaml;InventoryAdjustmentWindow.xaml;MainWindow.xaml;PaymentWindow.xaml;PriceListDialog.xaml;PriceListsWindow.xaml;PriceUpdateDialog.xaml;ProductDialog.xaml;ProductSearchDialog.xaml;ProductsWindow.xaml;PurchaseOrderWindow.xaml;SaleDetailsWindow.xaml;SalesHistoryWindow.xaml;SimpleInputDialog.xaml;StockMovementsWindow.xaml;SupplierDialog.xaml;SupplierSelectionDialog.xaml;SuppliersWindow.xaml;
 
 True
 

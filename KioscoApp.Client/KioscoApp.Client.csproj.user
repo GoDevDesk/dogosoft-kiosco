@@ -4,13 +4,34 @@
     <_LastSelectedProfileId>D:\Desarrollo\DogoSoft\dogosoft-kiosco\KioscoApp.Client\Properties\PublishProfiles\FolderProfile.pubxml</_LastSelectedProfileId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Update="AdjustmentDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="InventoryAdjustmentWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="PaymentWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="PriceListDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="PriceListsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="PriceUpdateDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="ProductDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="ProductSearchDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="ProductsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="PurchaseOrderWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="SaleDetailsWindow.xaml.cs">
@@ -22,15 +43,48 @@
     <Compile Update="SimpleInputDialog.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="StockMovementsWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="SupplierDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="SupplierSelectionDialog.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="SuppliersWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Update="AdjustmentDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="InventoryAdjustmentWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="PaymentWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="PriceListDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="PriceListsWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="PriceUpdateDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="ProductDialog.xaml">
       <SubType>Designer</SubType>
     </Page>
+    <Page Update="ProductSearchDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
     <Page Update="ProductsWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="PurchaseOrderWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
     <Page Update="SaleDetailsWindow.xaml">
@@ -40,6 +94,18 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Update="SimpleInputDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="StockMovementsWindow.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SupplierDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SupplierSelectionDialog.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="SuppliersWindow.xaml">
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

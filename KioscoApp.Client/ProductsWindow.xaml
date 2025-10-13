@@ -172,7 +172,7 @@
                             </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="Precio" Binding="{Binding Price, StringFormat=C}" Width="100">
+                        <DataGridTextColumn Header="Precio" Binding="{Binding DisplayPrice, StringFormat=C}" Width="100">
                             <DataGridTextColumn.HeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter Property="Background" Value="{StaticResource LightBlue}"/>
@@ -192,7 +192,7 @@
                             </DataGridTextColumn.HeaderStyle>
                         </DataGridTextColumn>
 
-                        <DataGridTextColumn Header="Categoría" Binding="{Binding Category}" Width="120">
+                        <DataGridTextColumn Header="Categoría" Binding="{Binding Category.Name}" Width="120">
                             <DataGridTextColumn.HeaderStyle>
                                 <Style TargetType="DataGridColumnHeader">
                                     <Setter Property="Background" Value="{StaticResource LightBlue}"/>

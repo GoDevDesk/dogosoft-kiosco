@@ -2,8 +2,23 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Mi Kiosco - Sistema Integrado" 
-        Height="800" Width="1200"
-        WindowState="Maximized">
+        Height="800" Width="1072"
+        MinHeight="600" MinWidth="800"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Normal">
+    <Window.Resources>
+        <!-- AQUÍ AGREGAS EL ESTILO -->
+        <Style x:Key="SubMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#2C3E50"/>
+            <Setter Property="Padding" Value="10,5"/>
+            <Style.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="#3498DB"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
 
     <Grid>
         <Grid.RowDefinitions>
@@ -16,17 +31,31 @@
             <DockPanel LastChildFill="True">
                 <!-- Menú de la izquierda -->
                 <Menu DockPanel.Dock="Left" Background="Transparent" Foreground="White" 
-              FontSize="13" FontWeight="Bold">
-                    <MenuItem Header="🛒 Nueva Venta" Click="BtnNuevaVenta_Click"/>
+      FontSize="13" FontWeight="Bold">
                     <MenuItem Header="📦 Artículos">
-                        <MenuItem Header="➕ Nuevo Artículo" Click="BtnNuevoArticulo_Click"/>
-                        <MenuItem Header="✏️ Editar Artículo" Click="BtnEditarArticulo_Click"/>
-                        <MenuItem Header="📋 Ver Artículos" Click="BtnVerArticulos_Click"/>
+                        <MenuItem Header="📋 Ver Artículos" Click="BtnVerArticulos_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="➕ Nuevo Artículo" Click="BtnNuevoArticulo_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="✏️ Editar Artículo" Click="BtnEditarArticulo_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="📈 Actualización masiva de precios" Click="MenuActualizacionMasivaPrecios_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <Separator/>
+                        <MenuItem Header="💰 Precios" Style="{StaticResource SubMenuItemStyle}">
+                            <MenuItem Header="📋 Ver Listas de Precios" Click="BtnVerListasPrecios_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                            <MenuItem Header="➕ Nueva Lista de Precios" Click="BtnNuevaListaPrecios_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        </MenuItem>
+                    </MenuItem>
+
+                    <MenuItem Header="🏭 Proveedores">
+                        <MenuItem Header="📋 Ver Proveedores" Click="BtnVerProveedores_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="➕ Nuevo Proveedor" Click="BtnNuevoProveedor_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                    </MenuItem>
+                    <MenuItem Header="📋 Inventario">
+                        <MenuItem Header="📊 Ver Movimientos de Stock" Click="BtnMovimientosStock_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="📦 Cargar Compra" Click="BtnCargarCompra_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="🔧 Ajuste de Inventario" Click="BtnAjusteInventario_Click" Style="{StaticResource SubMenuItemStyle}"/>
                     </MenuItem>
                     <MenuItem Header="📊 Historial" Click="BtnHistorialVentas_Click"/>
                     <MenuItem Header="📈 Reportes" Click="BtnReportes_Click" IsEnabled="False"/>
                     <MenuItem Header="👥 Clientes" Click="BtnClientes_Click" IsEnabled="False"/>
-                    <MenuItem Header="📋 Inventario" Click="BtnInventario_Click" IsEnabled="False"/>
                     <MenuItem Header="⚙️ Configuración" Click="BtnConfiguracion_Click" IsEnabled="False"/>
                 </Menu>
 
@@ -47,13 +76,17 @@
         <!-- CONTENIDO PRINCIPAL -->
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="2*"/>
-                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="367*"/>
+                <ColumnDefinition Width="133*"/>
             </Grid.ColumnDefinitions>
 
             <!-- LADO IZQUIERDO - POS INTEGRADO -->
             <Border Grid.Column="0" Background="White" BorderBrush="#BDC3C7" BorderThickness="0,0,1,0" Margin="0,-20,0,0">
                 <Grid Margin="15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="657*"/>
+                        <ColumnDefinition Width="46*"/>
+                    </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="1*"/>
@@ -62,29 +95,77 @@
                     </Grid.RowDefinitions>
 
                     <!-- Buscador -->
-                    <StackPanel Grid.Row="0" Margin="0,0,0,15">
+                    <StackPanel Grid.Row="0" Margin="0,0,0,15" Grid.ColumnSpan="2">
                         <TextBlock Text="PUNTO DE VENTA" FontSize="18" FontWeight="Bold" 
-                                   Foreground="#2C3E50" Margin="0,0,0,10"/>
+               Foreground="#2C3E50" Margin="0,0,0,10"/>
 
-                        <StackPanel Orientation="Horizontal">
-                            <TextBox x:Name="TxtCodigo" Width="300" Height="35" FontSize="14"
-                                     ToolTip="Código o nombre de producto"
-                                     KeyDown="TxtCodigo_KeyDown"
-                                     VerticalContentAlignment="Center"
-                                     Margin="0,0,10,0"/>
-                            <Button Content="Agregar" Click="BtnAgregar_Click" 
-                                    Height="35" Width="80" FontSize="12" FontWeight="Bold"/>
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="300"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="90"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Buscador -->
+                            <TextBox Grid.Column="0" 
+                 x:Name="TxtCodigo" 
+                 Height="35" 
+                 FontSize="14"
+                 ToolTip="Código o nombre de producto"
+                 KeyDown="TxtCodigo_KeyDown"
+                 VerticalContentAlignment="Center"
+                 Margin="0,0,10,0"/>
+
+                            <Button Grid.Column="1" 
+                Content="Agregar" 
+                Click="BtnAgregar_Click" 
+                Height="35" 
+                FontSize="12" 
+                FontWeight="Bold"
+                Margin="0,0,10,0"/>
+
+                            <Button Grid.Column="2" 
+                Content="🔍 Buscar" 
+                Click="BtnBuscarAvanzado_Click" 
+                Height="35" 
+                FontSize="12" 
+                FontWeight="Bold"
+                Background="#3498DB"
+                Foreground="White"
+                Margin="0,0,15,0"
+                ToolTip="Búsqueda avanzada de productos (F4)"/>
+
+                            <!-- Lista de Precios -->
+                            <TextBlock Grid.Column="3" 
+                   Text="Lista:" 
+                   VerticalAlignment="Center" 
+                   FontWeight="Bold" 
+                   Foreground="#2C3E50"
+                   Margin="0,0,8,0"/>
+
+                            <ComboBox Grid.Column="3" 
+                  x:Name="CmbListaPrecios"
+                  Height="35"
+                  DisplayMemberPath="Name"
+                  SelectedValuePath="Id"
+                  SelectionChanged="CmbListaPrecios_SelectionChanged"
+                  BorderBrush="#3498DB"
+                  BorderThickness="2"
+                  VerticalContentAlignment="Center" Grid.ColumnSpan="2" Margin="37,0,27,0"/>
+                        </Grid>
 
                         <TextBlock x:Name="TxtMensaje" Foreground="Red" FontWeight="Bold" 
-                                   Margin="0,10,0,0" FontSize="12"/>
+               Margin="0,10,0,0" FontSize="12"/>
                     </StackPanel>
 
                     <!-- DataGrid -->
                     <DataGrid x:Name="GridVenta" AutoGenerateColumns="False"
                               CanUserAddRows="False" IsReadOnly="True" SelectionMode="Single"
                               SelectionUnit="FullRow" Margin="0,78,0,15"
-                              SelectionChanged="GridVenta_SelectionChanged" Grid.RowSpan="2">
+                              SelectionChanged="GridVenta_SelectionChanged" Grid.RowSpan="2" Grid.ColumnSpan="2">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Producto" Binding="{Binding Name}" Width="*"/>
                             <DataGridTextColumn Header="Cant." Binding="{Binding Cantidad}" Width="60"/>
@@ -93,21 +174,25 @@
                             <DataGridTextColumn Header="Stock" Binding="{Binding StockDisponible}" Width="60"/>
                         </DataGrid.Columns>
                     </DataGrid>
-
+                    
                     <!-- Botones de acción -->
-                    <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0,0,0,15">
+                    <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,206,0,244" Grid.ColumnSpan="2" Grid.RowSpan="3">
                         <Button Content="Eliminar Ítem" Click="BtnEliminar_Click" 
-                                Width="120" Height="35" Margin="0,0,10,0"/>
+                          Width="110" Height="35" Margin="0,0,10,0"/>
                         <Button Content="Modificar Cantidad" Click="BtnModificarCantidad_Click" 
-                                Width="140" Height="35" Margin="0,0,10,0"/>
-                        <Button Content="Recargo" Click="BtnRecargo_Click" 
-                                Width="80" Height="35" Margin="0,0,10,0"/>
+                             Width="140" Height="35" Margin="0,0,10,0"/>
+                        <Button Content="💰 Descuento" Click="BtnDescuento_Click" 
+                              Width="110" Height="35" Margin="0,0,10,0"
+                           Background="#E67E22" Foreground="White" FontWeight="Bold"/>
+                        <Button Content="📈 Recargo" Click="BtnRecargo_Click" 
+                             Width="100" Height="35" Margin="0,0,10,0"
+                             Background="#27AE60" Foreground="White" FontWeight="Bold"/>
                         <Button Content="Cambiar Precio" Click="BtnCambiarPrecio_Click" 
-                                Width="120" Height="35"/>
+                            Width="120" Height="35"/>
                     </StackPanel>
 
                     <!-- DATOS DEL COMPROBANTE Y CLIENTE -->
-                    <Grid Grid.Row="3">
+                    <Grid Grid.Row="2" Grid.ColumnSpan="2" Margin="0,50,0,0" Grid.RowSpan="2">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="1*"/>
                             <RowDefinition Height="1*"/>
@@ -115,7 +200,7 @@
 
                         <!-- DATOS DEL COMPROBANTE -->
                         <Border Grid.Row="0" Background="#F8F9FA" BorderBrush="#3498DB" BorderThickness="2" 
-                                Margin="0,0,0,5" CornerRadius="5">
+                                Margin="0,-11,0,0" CornerRadius="5" Height="128" VerticalAlignment="Top" Grid.RowSpan="2">
                             <Grid Margin="10">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -182,8 +267,8 @@
                         </Border>
 
                         <!-- DATOS DEL CLIENTE -->
-                        <Border Grid.Row="1" Background="#F8F9FA" BorderBrush="#3498DB" BorderThickness="2" 
-                                Margin="0,5,0,0" CornerRadius="5">
+                        <Border Background="#F8F9FA" BorderBrush="#3498DB" BorderThickness="2" 
+                                Margin="0,131,0,10" CornerRadius="5" Grid.RowSpan="2">
                             <Grid Margin="10">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto"/>
@@ -272,7 +357,7 @@
                 </Grid.RowDefinitions>
 
                 <!-- 1. ÁREA DE COBRO (NEGRO) -->
-                <Border Grid.Row="0" Background="Black">
+                <Border Grid.Row="0" Background="Black" Margin="0,-23,10,0">
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
@@ -288,20 +373,20 @@
 
                             <StackPanel Grid.Column="0" VerticalAlignment="Center">
                                 <TextBlock Text="Subtotal" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,5"/>
-                                <TextBlock Text="Descuento" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,15"/>
+                                <TextBlock Text="Desc./Recargo" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,15"/>
                                 <TextBlock Text="Total" Foreground="White" FontSize="16" FontWeight="Bold"/>
                             </StackPanel>
 
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" HorizontalAlignment="Right">
                                 <TextBlock x:Name="TxtSubtotal" Text="$0.00" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,5" HorizontalAlignment="Right"/>
-                                <TextBlock x:Name="TxtDescuento" Text="$0.00" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,15" HorizontalAlignment="Right"/>
+                                <TextBlock x:Name="TxtDescuentoRecargo" Text="$0.00" Foreground="White" FontSize="14" FontWeight="Bold" Margin="0,0,0,15" HorizontalAlignment="Right"/>
                                 <TextBlock x:Name="TxtTotal" Text="$0.00" Foreground="#3498DB" FontSize="36" FontWeight="Bold" HorizontalAlignment="Right"/>
                             </StackPanel>
                         </Grid>
 
                         <!-- BOTÓN COBRAR -->
                         <Button x:Name="BtnCobrar" Grid.Row="1" Content="F1-Cobrar" 
-                                Click="BtnCobrar_Click" Height="60" Margin="0" Padding="0"
+                                Click="BtnCobrar_Click" Height="60" Margin="0,0,-10,0" Padding="0"
                                 FontSize="18" FontWeight="Bold" IsEnabled="False">
                             <Button.Style>
                                 <Style TargetType="Button">
@@ -342,8 +427,12 @@
                 </Grid>
 
                 <!-- 3. ACCIONES RÁPIDAS Y LOGO -->
-                <Border Grid.Row="2" Background="#ECF0F1" BorderBrush="#BDC3C7" BorderThickness="0,1,0,0" Margin="0,106,0,0">
-                    <Grid Margin="15">
+                <Border Grid.Row="2" Background="#ECF0F1" BorderBrush="#BDC3C7" BorderThickness="0,1,0,0" Margin="0,21,10,0">
+                    <Grid Margin="15,24,15,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="104*"/>
+                            <ColumnDefinition Width="199*"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="1*"/>
@@ -352,10 +441,10 @@
 
                         <TextBlock Grid.Row="0" Text="ACCIONES RÁPIDAS" 
                                    FontSize="14" FontWeight="Bold" 
-                                   Foreground="#2C3E50" HorizontalAlignment="Center" 
-                                   Margin="0,10,0,15"/>
+                                   Foreground="#2C3E50" HorizontalAlignment="Left" 
+                                   Margin="86,10,0,15" Grid.ColumnSpan="2"/>
 
-                        <StackPanel Grid.Row="1" VerticalAlignment="Top">
+                        <StackPanel Grid.Row="1" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.RowSpan="2">
                             <Button x:Name="BtnDescuento" Content="💰 Aplicar Descuento" 
                                     Height="30" Margin="0,2" FontSize="11" FontWeight="Bold"
                                     BorderThickness="2" BorderBrush="#E67E22"
@@ -477,11 +566,11 @@
                             </Button>
                         </StackPanel>
 
-                        <Viewbox Grid.Row="2" Stretch="Uniform" StretchDirection="DownOnly" Margin="0,18,0,-9">
-                            <Border  CornerRadius="12" Padding="25,15" Height="299">
+                        <Viewbox Grid.Row="1" Stretch="Uniform" StretchDirection="DownOnly" Margin="0,194,0,-9" Grid.ColumnSpan="2" Grid.RowSpan="2">
+                            <Border  CornerRadius="12" Padding="25,15" Height="314">
                                 <StackPanel HorizontalAlignment="Center">
                                     <Image Source="Assets/Logo.png"
-                                           Height="200" Width="629" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                           Height="318" Width="302" RenderTransformOrigin="0.476,0.232"/>
                                     <TextBlock Text="MI KIOSCO" FontSize="16" FontWeight="Bold" 
                                                Foreground="Blue" HorizontalAlignment="Center" Margin="0,0,0,5"/>
                                     <TextBlock Text="Sistema POS Integrado" FontSize="12" 
