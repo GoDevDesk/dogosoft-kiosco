@@ -1,0 +1,457 @@
+﻿<Window x:Class="FastFoodApp.Client.ComboEditorDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Editor de Combos" 
+        Height="886" Width="1093"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        Background="#FFF5E6">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Grid.Row="0" 
+                Background="#FF6B35"
+                CornerRadius="12"
+                Padding="20,15"
+                Margin="0,0,0,20">
+            <StackPanel>
+                <TextBlock x:Name="TxtTitulo"
+                           Text="🎁 Crear Nuevo Combo" 
+                           FontSize="22" 
+                           FontWeight="Bold" 
+                           Foreground="White"/>
+                <TextBlock Text="Define los productos y opciones del combo" 
+                           FontSize="12" 
+                           Foreground="#FFE5E5"
+                           Margin="0,5,0,0"/>
+            </StackPanel>
+        </Border>
+
+        <!-- CONTENIDO -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+                <!-- INFORMACIÓN BÁSICA -->
+                <Border Background="White"
+                        CornerRadius="12"
+                        Padding="20"
+                        Margin="0,0,0,15"
+                        BorderBrush="#DDD"
+                        BorderThickness="1">
+                    <StackPanel>
+                        <TextBlock Text="📋 INFORMACIÓN BÁSICA" 
+                                   FontSize="16" 
+                                   FontWeight="Bold" 
+                                   Foreground="#FF6B35"
+                                   Margin="0,0,0,15"/>
+
+                        <!-- Nombre -->
+                        <TextBlock Text="Nombre del Combo:" 
+                                   FontSize="13" 
+                                   FontWeight="SemiBold"
+                                   Foreground="#666"
+                                   Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtNombre"
+                                 Height="40"
+                                 FontSize="14"
+                                 Padding="12,0"
+                                 BorderBrush="#FF6B35"
+                                 BorderThickness="2"
+                                 Margin="0,0,0,15">
+                            <TextBox.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+
+                        <!-- Descripción -->
+                        <TextBlock Text="Descripción:" 
+                                   FontSize="13" 
+                                   FontWeight="SemiBold"
+                                   Foreground="#666"
+                                   Margin="0,0,0,5"/>
+                        <TextBox x:Name="TxtDescripcion"
+                                 Height="80"
+                                 FontSize="13"
+                                 Padding="12,10"
+                                 BorderBrush="#FF6B35"
+                                 BorderThickness="2"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"
+                                 Margin="0,0,0,15">
+                            <TextBox.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+
+                        <!-- Precio y Categoría -->
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="20"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Precio -->
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="Precio del Combo:" 
+                                           FontSize="13" 
+                                           FontWeight="SemiBold"
+                                           Foreground="#666"
+                                           Margin="0,0,0,5"/>
+                                <TextBox x:Name="TxtPrecio"
+                                         Height="40"
+                                         FontSize="14"
+                                         Padding="12,0"
+                                         BorderBrush="#FF6B35"
+                                         BorderThickness="2">
+                                    <TextBox.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8"/>
+                                        </Style>
+                                    </TextBox.Resources>
+                                </TextBox>
+                            </StackPanel>
+
+                            <!-- Categoría -->
+                            <StackPanel Grid.Column="2">
+                                <TextBlock Text="Categoría:" 
+                                           FontSize="13" 
+                                           FontWeight="SemiBold"
+                                           Foreground="#666"
+                                           Margin="0,0,0,5"/>
+                                <ComboBox x:Name="CmbCategoria"
+                                          Height="40"
+                                          FontSize="13"
+                                          Padding="12,0"
+                                          BorderBrush="#FF6B35"
+                                          BorderThickness="2"
+                                          DisplayMemberPath="Name"
+                                          SelectedValuePath="Id">
+                                    <ComboBox.Resources>
+                                        <Style TargetType="Border">
+                                            <Setter Property="CornerRadius" Value="8"/>
+                                        </Style>
+                                    </ComboBox.Resources>
+                                </ComboBox>
+                            </StackPanel>
+                        </Grid>
+                    </StackPanel>
+                </Border>
+
+                <!-- PRODUCTOS DEL COMBO -->
+                <Border Background="White"
+                        CornerRadius="12"
+                        Padding="20"
+                        Margin="0,0,0,15"
+                        BorderBrush="#DDD"
+                        BorderThickness="1">
+                    <StackPanel>
+                        <Grid Margin="0,0,0,15">
+                            <TextBlock Text="🍔 PRODUCTOS DEL COMBO" 
+                                       FontSize="16" 
+                                       FontWeight="Bold" 
+                                       Foreground="#FF6B35"
+                                       VerticalAlignment="Center"/>
+
+                            <Button Content="➕ Agregar Producto"
+                                    Click="BtnAgregarProducto_Click"
+                                    HorizontalAlignment="Right"
+                                    Height="35"
+                                    Padding="15,0"
+                                    FontSize="12"
+                                    FontWeight="Bold"
+                                    Background="#4CAF50"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                            </Button>
+                        </Grid>
+
+                        <!-- Lista de productos -->
+                        <ItemsControl x:Name="ProductosItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="#FFF9F0"
+                                            BorderBrush="#FFD54F"
+                                            BorderThickness="2"
+                                            CornerRadius="10"
+                                            Padding="15"
+                                            Margin="0,0,0,10">
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!-- Primera fila: Info básica -->
+                                            <Grid Grid.Row="0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <TextBlock Grid.Column="0"
+                                                           Text="{Binding Icon}" 
+                                                           FontSize="24"
+                                                           VerticalAlignment="Center"
+                                                           Margin="0,0,15,0"/>
+
+                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                                    <TextBlock Text="{Binding ProductName}" 
+                                                               FontSize="14"
+                                                               FontWeight="Bold"
+                                                               Foreground="#333"/>
+                                                    <TextBlock Text="{Binding QuantityText}" 
+                                                               FontSize="12"
+                                                               Foreground="#666"
+                                                               Margin="0,3,0,0"/>
+                                                </StackPanel>
+
+                                                <StackPanel Grid.Column="2" 
+                                                            Orientation="Horizontal"
+                                                            VerticalAlignment="Center">
+                                                    <CheckBox x:Name="ChkPermiteSubstitucion"
+                                                              Content="Permite elegir alternativa"
+                                                              IsChecked="{Binding AllowsSubstitution}"
+                                                              Checked="ChkPermiteSubstitucion_Changed"
+                                                              Unchecked="ChkPermiteSubstitucion_Changed"
+                                                              FontSize="11"
+                                                              Margin="0,0,15,0"/>
+
+                                                    <Button Content="🗑️" 
+                                                            Tag="{Binding}"
+                                                            Click="BtnEliminarProducto_Click"
+                                                            Width="30"
+                                                            Height="30"
+                                                            Background="#E74C3C"
+                                                            Foreground="White"
+                                                            BorderThickness="0"
+                                                            Cursor="Hand"
+                                                            ToolTip="Eliminar">
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}"
+                                                                        CornerRadius="6">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                </StackPanel>
+                                            </Grid>
+
+                                            <!-- Segunda fila: Opciones alternativas (si permite sustitución) -->
+                                            <StackPanel Grid.Row="1" 
+                                                        Visibility="{Binding SubstitutionVisibility}"
+                                                        Margin="40,10,0,0">
+                                                <Grid Margin="0,0,0,8">
+                                                    <TextBlock Text="Productos alternativos:" 
+                                                               FontSize="12"
+                                                               FontWeight="SemiBold"
+                                                               Foreground="#666"
+                                                               VerticalAlignment="Center"/>
+
+                                                    <Button Content="+ Agregar alternativa"
+                                                            Tag="{Binding}"
+                                                            Click="BtnAgregarAlternativa_Click"
+                                                            HorizontalAlignment="Right"
+                                                            Height="25"
+                                                            Padding="10,0"
+                                                            FontSize="10"
+                                                            Background="#3498DB"
+                                                            Foreground="White"
+                                                            BorderThickness="0"
+                                                            Cursor="Hand">
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}"
+                                                                        CornerRadius="5">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                </Grid>
+
+                                                <ItemsControl ItemsSource="{Binding Alternatives}">
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Border Background="White"
+                                                                    BorderBrush="#DDD"
+                                                                    BorderThickness="1"
+                                                                    CornerRadius="6"
+                                                                    Padding="8"
+                                                                    Margin="0,0,0,5">
+                                                                <Grid>
+                                                                    <TextBlock Text="{Binding AlternativeProductName}" 
+                                                                               FontSize="11"
+                                                                               VerticalAlignment="Center"/>
+
+                                                                    <Button Content="✖" 
+                                                                            Tag="{Binding}"
+                                                                            Click="BtnEliminarAlternativa_Click"
+                                                                            HorizontalAlignment="Right"
+                                                                            Width="20"
+                                                                            Height="20"
+                                                                            Background="#E74C3C"
+                                                                            Foreground="White"
+                                                                            BorderThickness="0"
+                                                                            FontSize="10"
+                                                                            Cursor="Hand">
+                                                                        <Button.Template>
+                                                                            <ControlTemplate TargetType="Button">
+                                                                                <Border Background="{TemplateBinding Background}"
+                                                                                        CornerRadius="4">
+                                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                                </Border>
+                                                                            </ControlTemplate>
+                                                                        </Button.Template>
+                                                                    </Button>
+                                                                </Grid>
+                                                            </Border>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                </ItemsControl>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+
+                        <!-- Mensaje si no hay productos -->
+                        <Border x:Name="ProductosVacioPanel"
+        Background="#FFF9F0"
+        BorderBrush="#FFD54F"
+        BorderThickness="2"
+        CornerRadius="10"
+        Padding="30"
+        Visibility="Visible">
+                            <Border.Effect>
+                                <DropShadowEffect Color="#FFD54F" 
+                          Direction="0" 
+                          ShadowDepth="0" 
+                          BlurRadius="0" 
+                          Opacity="0.3"/>
+                            </Border.Effect>
+                            <StackPanel HorizontalAlignment="Center">
+                                <TextBlock Text="📦" 
+                                           FontSize="48"
+                                           HorizontalAlignment="Center"
+                                           Opacity="0.5"
+                                           Margin="0,0,0,10"/>
+                                <TextBlock Text="No hay productos agregados" 
+                                           FontSize="14"
+                                           FontWeight="SemiBold"
+                                           Foreground="#999"
+                                           HorizontalAlignment="Center"/>
+                                <TextBlock Text="Haz clic en 'Agregar Producto' para comenzar" 
+                                           FontSize="12"
+                                           Foreground="#BBB"
+                                           HorizontalAlignment="Center"
+                                           Margin="0,5,0,0"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- BOTONES -->
+        <Grid Grid.Row="2" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" 
+                    Content="✓ Guardar Combo" 
+                    Click="BtnGuardar_Click"
+                    Height="50"
+                    Margin="0,0,10,0"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Cursor="Hand">
+                <Button.Style>
+                    <Style TargetType="Button">
+                        <Setter Property="Background">
+                            <Setter.Value>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                    <GradientStop Color="#66BB6A" Offset="0"/>
+                                    <GradientStop Color="#4CAF50" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Foreground" Value="White"/>
+                        <Setter Property="BorderThickness" Value="0"/>
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="10">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#81C784" Offset="0"/>
+                                            <GradientStop Color="#66BB6A" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Button.Style>
+            </Button>
+
+            <Button Grid.Column="1" 
+                    Content="✗ Cancelar" 
+                    Click="BtnCancelar_Click"
+                    Height="50"
+                    Margin="10,0,0,0"
+                    FontSize="15"
+                    FontWeight="Bold"
+                    Background="White"
+                    Foreground="#E74C3C"
+                    BorderBrush="#E74C3C"
+                    BorderThickness="2"
+                    Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+        </Grid>
+    </Grid>
+</Window>

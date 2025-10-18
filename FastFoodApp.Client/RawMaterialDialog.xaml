@@ -1,0 +1,332 @@
+﻿<Window x:Class="FastFoodApp.Client.RawMaterialDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nuevo Insumo" 
+        Height="814" Width="700"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#FFF5E6">
+
+    <Window.Resources>
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#666"/>
+            <Setter Property="Margin" Value="0,0,0,8"/>
+        </Style>
+
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="BorderBrush" Value="#FF6B35"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="MinWidth" Value="120"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FF6B35" Offset="0"/>
+                        <GradientStop Color="#D32F2F" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FF8555" Offset="0"/>
+                                <GradientStop Color="#E74C3C" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CancelButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#666"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="#DDD"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F5F5F5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER -->
+        <Border Grid.Row="0" CornerRadius="12" Margin="0,0,0,15">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#D32F2F" Offset="0"/>
+                    <GradientStop Color="#FF6B35" Offset="0.5"/>
+                    <GradientStop Color="#FFC107" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+            <Grid Margin="20,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🥬" FontSize="32" Margin="0,0,15,0"/>
+                    <StackPanel>
+                        <TextBlock x:Name="TxtTitulo"
+                                   Text="NUEVO INSUMO" 
+                                   FontSize="20" 
+                                   FontWeight="Black" 
+                                   Foreground="White"/>
+                        <TextBlock Text="Materia prima o insumo para el negocio" 
+                                   FontSize="11" 
+                                   Foreground="#FFE5E5" 
+                                   Margin="0,-3,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- FORMULARIO -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+            <Border Background="White"
+                    CornerRadius="12"
+                    Padding="25"
+                    BorderBrush="#DDD"
+                    BorderThickness="1">
+                <StackPanel>
+                    <!-- Tipo de Insumo -->
+                    <Border Background="#FFE5CC"
+                            BorderBrush="#FF6B35"
+                            BorderThickness="2"
+                            CornerRadius="10"
+                            Padding="20"
+                            Margin="0,0,0,20">
+                        <StackPanel>
+                            <TextBlock Text="Tipo de Insumo" 
+                                       Style="{StaticResource LabelStyle}"
+                                       FontSize="14"
+                                       Foreground="#FF6B35"/>
+                            <CheckBox x:Name="ChkEsIngrediente"
+                                      Content="✓ Es un INGREDIENTE (se usa en recetas de productos)"
+                                      FontSize="13"
+                                      FontWeight="Bold"
+                                      Margin="0,10,0,5"/>
+                            <TextBlock TextWrapping="Wrap"
+                                       FontSize="11"
+                                       Foreground="#666"
+                                       Margin="25,0,0,0">
+                                <Run Text="Si está marcado, este insumo podrá agregarse a las recetas de los productos."/>
+                                <LineBreak/>
+                                <Run Text="Si NO está marcado, solo se usará para registrar compras (ej: papel, vasos)."/>
+                            </TextBlock>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Código -->
+                    <TextBlock Text="Código: *" Style="{StaticResource LabelStyle}"/>
+                    <TextBox x:Name="TxtCode" 
+                             Style="{StaticResource TextBoxStyle}"
+                             MaxLength="20"
+                             Margin="0,0,0,15"/>
+
+                    <!-- Nombre -->
+                    <TextBlock Text="Nombre: *" Style="{StaticResource LabelStyle}"/>
+                    <TextBox x:Name="TxtName" 
+                             Style="{StaticResource TextBoxStyle}"
+                             MaxLength="200"
+                             Margin="0,0,0,15"/>
+
+                    <!-- Descripción -->
+                    <TextBlock Text="Descripción:" Style="{StaticResource LabelStyle}"/>
+                    <TextBox x:Name="TxtDescription" 
+                             Height="60"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True"
+                             VerticalScrollBarVisibility="Auto"
+                             BorderBrush="#FF6B35"
+                             BorderThickness="2"
+                             Padding="10"
+                             FontSize="13"
+                             MaxLength="500"
+                             Margin="0,0,0,15"/>
+
+                    <!-- Unidad de Medida -->
+                    <TextBlock Text="Unidad de Medida: *" Style="{StaticResource LabelStyle}"/>
+                    <ComboBox x:Name="CmbUnit"
+                              Height="35"
+                              BorderBrush="#FF6B35"
+                              BorderThickness="2"
+                              FontSize="13"
+                              VerticalContentAlignment="Center"
+                              Margin="0,0,0,15">
+                        <ComboBoxItem Content="UN - Unidad" Tag="UN" IsSelected="True"/>
+                        <ComboBoxItem Content="KG - Kilogramo" Tag="KG"/>
+                        <ComboBoxItem Content="GR - Gramos" Tag="GR"/>
+                        <ComboBoxItem Content="L - Litros" Tag="L"/>
+                        <ComboBoxItem Content="ML - Mililitros" Tag="ML"/>
+                        <ComboBoxItem Content="CC - Centímetros Cúbicos" Tag="CC"/>
+                    </ComboBox>
+
+                    <!-- Costo por Unidad -->
+                    <TextBlock Text="Costo por Unidad:" Style="{StaticResource LabelStyle}"/>
+                    <TextBox x:Name="TxtUnitCost" 
+                             Style="{StaticResource TextBoxStyle}"
+                             Text="0"
+                             Margin="0,0,0,15"/>
+
+                    <!-- Categoría -->
+                    <TextBlock Text="Categoría:" Style="{StaticResource LabelStyle}"/>
+                    <ComboBox x:Name="CmbCategory"
+                              Height="35"
+                              BorderBrush="#FF6B35"
+                              BorderThickness="2"
+                              FontSize="13"
+                              VerticalContentAlignment="Center"
+                              DisplayMemberPath="Name"
+                              SelectedValuePath="Id"
+                              Margin="0,0,0,15"/>
+
+                    <!-- Proveedor -->
+                    <TextBlock Text="Proveedor Principal:" Style="{StaticResource LabelStyle}"/>
+                    <ComboBox x:Name="CmbSupplier"
+                              Height="35"
+                              BorderBrush="#FF6B35"
+                              BorderThickness="2"
+                              FontSize="13"
+                              VerticalContentAlignment="Center"
+                              DisplayMemberPath="Name"
+                              SelectedValuePath="Id"
+                              Margin="0,0,0,15"/>
+
+                    <!-- Stock (solo para ingredientes) -->
+                    <Border x:Name="PanelStock"
+                            Background="#F0F8FF"
+                            BorderBrush="#3498DB"
+                            BorderThickness="2"
+                            CornerRadius="10"
+                            Padding="15"
+                            Margin="0,5,0,0">
+                        <StackPanel>
+                            <TextBlock Text="📊 Control de Cantidad (solo para ingredientes)" 
+                                       FontSize="13"
+                                       FontWeight="Bold"
+                                       Foreground="#3498DB"
+                                       Margin="0,0,0,10"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0" Margin="0,0,10,0">
+                                    <TextBlock Text="Cantidad Mínima:" 
+                                               Style="{StaticResource LabelStyle}"
+                                               FontSize="11"/>
+                                    <TextBox x:Name="TxtMinQuantity" 
+                                             Height="35"
+                                             Text="0"
+                                             BorderBrush="#3498DB"
+                                             BorderThickness="2"
+                                             Padding="8,0"
+                                             FontSize="12"
+                                             VerticalContentAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" Margin="0,0,10,0">
+                                    <TextBlock Text="Cantidad Máxima:" 
+                                               Style="{StaticResource LabelStyle}"
+                                               FontSize="11"/>
+                                    <TextBox x:Name="TxtMaxQuantity" 
+                                             Height="35"
+                                             Text="0"
+                                             BorderBrush="#3498DB"
+                                             BorderThickness="2"
+                                             Padding="8,0"
+                                             FontSize="12"
+                                             VerticalContentAlignment="Center"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="2">
+                                    <TextBlock Text="Disponible:" 
+                                               Style="{StaticResource LabelStyle}"
+                                               FontSize="11"/>
+                                    <TextBox x:Name="TxtAvailableQuantity" 
+                                             Height="35"
+                                             Text="0"
+                                             BorderBrush="#27AE60"
+                                             BorderThickness="2"
+                                             Padding="8,0"
+                                             FontSize="12"
+                                             FontWeight="Bold"
+                                             VerticalContentAlignment="Center"
+                                             IsReadOnly="True"
+                                             Background="#E8F8F5"/>
+                                </StackPanel>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </ScrollViewer>
+
+        <!-- BOTONES -->
+        <StackPanel Grid.Row="2" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right"
+                    Margin="0,15,0,0">
+            <Button x:Name="BtnGuardar"
+                    Content="💾 Guardar" 
+                    Width="150"
+                    Style="{StaticResource ButtonStyle}"
+                    Click="BtnGuardar_Click"
+                    IsDefault="True"/>
+            <Button x:Name="BtnCancelar"
+                    Content="✖ Cancelar" 
+                    Width="150"
+                    Style="{StaticResource CancelButtonStyle}"
+                    Click="BtnCancelar_Click"
+                    IsCancel="True"
+                    Margin="15,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>

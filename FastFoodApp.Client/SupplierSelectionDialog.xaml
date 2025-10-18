@@ -1,0 +1,70 @@
+﻿<Window x:Class="FastFoodApp.Client.SupplierSelectionDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Seleccionar Proveedor" Height="400" Width="500" 
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize">
+    <Window.Resources>
+        <SolidColorBrush x:Key="PrimaryBlue" Color="#FF3498DB"/>
+    </Window.Resources>
+
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" 
+                   Text="Seleccione un proveedor:"
+                   FontWeight="Bold"
+                   Margin="0,0,0,10"/>
+
+        <TextBox Grid.Row="1" 
+                 x:Name="TxtBuscar"
+                 Margin="0,0,0,10"
+                 TextChanged="TxtBuscar_TextChanged"
+                 Padding="5"/>
+
+        <ListBox Grid.Row="2" 
+                 x:Name="LstProveedores"
+                 DisplayMemberPath="Name"
+                 Margin="0,0,0,10"/>
+
+        <StackPanel Grid.Row="3"
+                    Orientation="Horizontal"
+                    HorizontalAlignment="Left"
+                    Margin="0,0,0,10">
+            <Button x:Name="BtnCrearProveedor"
+                    Content="+"
+                    Width="30"
+                    Height="30"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Background="{StaticResource PrimaryBlue}"
+                    Foreground="White"
+                    BorderBrush="{StaticResource PrimaryBlue}"
+                    Cursor="Hand"
+                    Click="BtnCrearProveedor_Click"
+                    ToolTip="Crear nuevo proveedor"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="4" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+            <Button Content="Aceptar" 
+                    Width="80" 
+                    Height="30"
+                    Click="BtnAceptar_Click"
+                    IsDefault="True"
+                    Margin="0,0,10,0"/>
+            <Button Content="Cancelar" 
+                    Width="80"
+                    Height="30"
+                    Click="BtnCancelar_Click"
+                    IsCancel="True"/>
+        </StackPanel>
+    </Grid>
+</Window>

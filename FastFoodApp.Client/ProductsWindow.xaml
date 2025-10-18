@@ -1,0 +1,482 @@
+﻿<Window x:Class="FastFoodApp.Client.ProductsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:FastFoodApp.Client"
+        Title="📦 Gestión de Productos" 
+        Height="750" Width="1400"
+        MinHeight="600" MinWidth="1000"
+        WindowStartupLocation="CenterScreen"
+        Background="#FFF5E6">
+
+    <Window.Resources>
+        <!-- Converter para el estado -->
+        <local:BoolToEstadoConverter x:Key="BoolToEstadoConverter"/>
+        <local:BoolToCheckConverter x:Key="BoolToCheckConverter"/>
+
+
+        <!-- Estilo para botones principales -->
+        <Style x:Key="PrimaryButton" TargetType="Button">
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FF6B35" Offset="0"/>
+                        <GradientStop Color="#D32F2F" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FF8555" Offset="0"/>
+                                <GradientStop Color="#E74C3C" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER CON GRADIENTE -->
+        <Border Grid.Row="0">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#D32F2F" Offset="0"/>
+                    <GradientStop Color="#FF6B35" Offset="0.5"/>
+                    <GradientStop Color="#FFC107" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid Margin="20,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="📦" FontSize="32" Margin="0,0,15,0"/>
+                    <StackPanel>
+                        <TextBlock Text="GESTIÓN DE PRODUCTOS" 
+                                   FontSize="22" 
+                                   FontWeight="Black" 
+                                   Foreground="White"/>
+                        <TextBlock Text="Administra tu inventario de productos" 
+                                   FontSize="11" 
+                                   Foreground="#FFE5E5" 
+                                   Margin="0,-3,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <!-- BOTONES DE ACCIÓN - CORREGIDO -->
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,15">
+                <!-- BOTÓN NUEVO -->
+                <Button x:Name="BtnNuevo" 
+            Content="➕ Nuevo Producto" 
+            Click="BtnNuevo_Click"
+            Height="40"
+            Padding="20,0"
+            Margin="5,0"
+            FontWeight="Bold"
+            Foreground="White"
+            BorderThickness="0"
+            Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background">
+                                <Setter.Value>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#FF6B35" Offset="0"/>
+                                        <GradientStop Color="#D32F2F" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </Setter.Value>
+                            </Setter>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#FF8555" Offset="0"/>
+                                                <GradientStop Color="#E74C3C" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- BOTÓN MODIFICAR -->
+                <Button x:Name="BtnModificar" 
+            Content="✏️ Modificar" 
+            Click="BtnModificar_Click"
+            Height="40"
+            Padding="20,0"
+            Margin="5,0"
+            FontWeight="Bold"
+            Foreground="White"
+            BorderThickness="0"
+            Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#3498DB"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#5DADE2"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- BOTÓN DISCONTINUAR -->
+                <Button x:Name="BtnDiscontinuar" 
+            Content="🚫 Discontinuar" 
+            Click="BtnDiscontinuar_Click"
+            Height="40"
+            Padding="20,0"
+            Margin="5,0"
+            FontWeight="Bold"
+            Foreground="White"
+            BorderThickness="0"
+            Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#E67E22"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#F39C12"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!-- BOTÓN REACTIVAR -->
+                <Button x:Name="BtnReactivar" 
+            Content="✅ Reactivar" 
+            Click="BtnReactivar_Click"
+            Visibility="Collapsed"
+            Height="40"
+            Padding="20,0"
+            Margin="5,0"
+            FontWeight="Bold"
+            Foreground="White"
+            BorderThickness="0"
+            Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="#27AE60"/>
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                    CornerRadius="8"
+                                    Padding="{TemplateBinding Padding}">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                            <Style.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter Property="Background" Value="#2ECC71"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+            </StackPanel>
+
+            <!-- FILTROS -->
+            <Border Grid.Row="1" 
+                    Background="White"
+                    CornerRadius="10"
+                    Padding="15"
+                    Margin="0,0,0,15"
+                    BorderBrush="#DDD"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="300"/>
+                        <ColumnDefinition Width="20"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Búsqueda -->
+                    <TextBlock Grid.Column="0" 
+                               Text="🔍 Buscar:" 
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               FontSize="13"
+                               Margin="0,0,10,0"/>
+
+                    <TextBox x:Name="TxtBuscar" 
+                             Grid.Column="1"
+                             Height="35"
+                             FontSize="13"
+                             Padding="10,0"
+                             BorderBrush="#FF6B35"
+                             BorderThickness="2"
+                             VerticalContentAlignment="Center"
+                             TextChanged="TxtBuscar_TextChanged"
+                             ToolTip="Buscar por código o nombre">
+                        <TextBox.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </TextBox.Resources>
+                    </TextBox>
+
+                    <!-- Categoría -->
+                    <TextBlock Grid.Column="3" 
+                               Text="🏷️ Categoría:" 
+                               VerticalAlignment="Center"
+                               FontWeight="SemiBold"
+                               FontSize="13"
+                               Margin="0,0,10,0"/>
+
+                    <ComboBox x:Name="CmbCategoria" 
+                              Grid.Column="4"
+                              Height="35"
+                              FontSize="13"
+                              BorderBrush="#FF6B35"
+                              BorderThickness="2"
+                              VerticalContentAlignment="Center"
+                              SelectionChanged="CmbCategoria_SelectionChanged">
+                        <ComboBox.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="8"/>
+                            </Style>
+                        </ComboBox.Resources>
+                    </ComboBox>
+
+                    <!-- Checkbox discontinuados -->
+                    <CheckBox x:Name="ChkMostrarDiscontinuados" 
+                              Grid.Column="6"
+                              Content="👁️ Mostrar Discontinuados"
+                              VerticalAlignment="Center"
+                              FontSize="12"
+                              FontWeight="SemiBold"
+                              Foreground="#666"
+                              Checked="ChkMostrarDiscontinuados_Changed"
+                              Unchecked="ChkMostrarDiscontinuados_Changed"/>
+                </Grid>
+            </Border>
+
+            <!-- DATAGRID -->
+            <Border Grid.Row="2" 
+                    Background="White"
+                    CornerRadius="12"
+                    BorderBrush="#DDD"
+                    BorderThickness="1">
+                <DataGrid x:Name="GridProducts"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          SelectionMode="Single"
+                          RowHeight="50"
+                          AlternatingRowBackground="#FFFAF0"
+                          GridLinesVisibility="None"
+                          HeadersVisibility="Column"
+                          FontSize="13"
+                          MouseDoubleClick="GridProducts_MouseDoubleClick">
+
+                    <DataGrid.ColumnHeaderStyle>
+                        <Style TargetType="DataGridColumnHeader">
+                            <Setter Property="Background" Value="#FF6B35"/>
+                            <Setter Property="Foreground" Value="White"/>
+                            <Setter Property="FontWeight" Value="Bold"/>
+                            <Setter Property="Padding" Value="12,12"/>
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="FontSize" Value="13"/>
+                        </Style>
+                    </DataGrid.ColumnHeaderStyle>
+
+                    <DataGrid.CellStyle>
+                        <Style TargetType="DataGridCell">
+                            <Setter Property="BorderThickness" Value="0"/>
+                            <Setter Property="Padding" Value="12,0"/>
+                            <Style.Triggers>
+                                <Trigger Property="IsSelected" Value="True">
+                                    <Setter Property="Background" Value="#FFE5CC"/>
+                                    <Setter Property="Foreground" Value="#333"/>
+                                </Trigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.CellStyle>
+
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="Código" Binding="{Binding Code}" Width="100">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="SemiBold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="Nombre" Binding="{Binding Name}" Width="2*">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="Categoría" Binding="{Binding Category.Name}" Width="150">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="Precio" Binding="{Binding DisplayPrice, StringFormat=C}" Width="120">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Right"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Setter Property="Foreground" Value="#FF6B35"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- NUEVA COLUMNA: Lleva Stock -->
+                        <DataGridTextColumn Header="Lleva Stock" Binding="{Binding TracksStock, Converter={StaticResource BoolToCheckConverter}}" Width="110">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontSize" Value="16"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <!-- COLUMNA STOCK MODIFICADA -->
+                        <DataGridTextColumn Header="Stock" Binding="{Binding StockDisplay}" Width="90">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+
+                        <DataGridTextColumn Header="Estado" Binding="{Binding IsActive, Converter={StaticResource BoolToEstadoConverter}}" Width="120">
+                            <DataGridTextColumn.ElementStyle>
+                                <Style TargetType="TextBlock">
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="FontWeight" Value="Bold"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                            <Setter Property="Foreground" Value="#E74C3C"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding IsActive}" Value="True">
+                                            <Setter Property="Foreground" Value="#27AE60"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGridTextColumn.ElementStyle>
+                        </DataGridTextColumn>
+                    </DataGrid.Columns>
+
+                    <!-- Menú contextual -->
+                    <DataGrid.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="📝 Ver Detalles" Click="MenuVerDetalles_Click"/>
+                            <MenuItem Header="✏️ Modificar" Click="BtnModificar_Click"/>
+                            <Separator/>
+                            <MenuItem x:Name="MenuDiscontinuar" Header="🚫 Discontinuar" Click="BtnDiscontinuar_Click"/>
+                            <MenuItem x:Name="MenuReactivar" Header="✅ Reactivar" Click="BtnReactivar_Click" Visibility="Collapsed"/>
+                            <Separator/>
+                            <MenuItem Header="🗑️ Eliminar" Click="MenuEliminar_Click" Foreground="#E74C3C"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+
+                    <!-- Estilo para filas discontinuadas -->
+                    <DataGrid.RowStyle>
+                        <Style TargetType="DataGridRow">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsActive}" Value="False">
+                                    <Setter Property="Background" Value="#FFEBEE"/>
+                                    <Setter Property="Opacity" Value="0.75"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </DataGrid.RowStyle>
+                </DataGrid>
+            </Border>
+        </Grid>
+    </Grid>
+</Window>

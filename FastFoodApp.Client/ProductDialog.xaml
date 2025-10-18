@@ -1,0 +1,1039 @@
+﻿<Window x:Class="FastFoodApp.Client.ProductDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Nuevo Producto" 
+        Height="880" Width="1012" 
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="CanResize"
+        MinHeight="700" MinWidth="900"
+        Background="#FFF5E6">
+
+    <Window.Resources>
+        <!-- Estilo para labels -->
+        <Style x:Key="LabelStyle" TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="5,0"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Foreground" Value="#666"/>
+        </Style>
+
+        <!-- Estilo para TextBox -->
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
+            <Setter Property="Padding" Value="10,0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="BorderBrush" Value="#FF6B35"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Estilo para Tabs - CORREGIDO -->
+        <Style x:Key="TabStyle" TargetType="TabItem">
+            <Setter Property="Padding" Value="15,10"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#666"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border x:Name="Border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="#DDD"
+                                BorderThickness="1,1,1,0"
+                                CornerRadius="8,8,0,0"
+                                Padding="{TemplateBinding Padding}"
+                                Margin="2,0">
+                            <ContentPresenter x:Name="ContentSite"
+                                            ContentSource="Header"
+                                            HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="White"/>
+                                <Setter TargetName="Border" Property="BorderBrush" Value="#FF6B35"/>
+                                <Setter TargetName="Border" Property="BorderThickness" Value="2,2,2,0"/>
+                                <Setter Property="Foreground" Value="#FF6B35"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#FFE5CC"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo para botones -->
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Padding" Value="20,0"/>
+            <Setter Property="MinWidth" Value="100"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                        <GradientStop Color="#FF6B35" Offset="0"/>
+                        <GradientStop Color="#D32F2F" Offset="1"/>
+                    </LinearGradientBrush>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FF8555" Offset="0"/>
+                                <GradientStop Color="#E74C3C" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="CancelButtonStyle" TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#666"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="#DDD"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#F5F5F5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Estilo para botón de ayuda -->
+        <Style x:Key="HelpButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Height" Value="30"/>
+            <Setter Property="Background" Value="#3498DB"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="15">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#5DADE2"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER CON GRADIENTE -->
+        <Border Grid.Row="0" CornerRadius="12" Margin="0,0,0,15">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#D32F2F" Offset="0"/>
+                    <GradientStop Color="#FF6B35" Offset="0.5"/>
+                    <GradientStop Color="#FFC107" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid Margin="20,0">
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="📦" FontSize="32" Margin="0,0,15,0"/>
+                    <StackPanel>
+                        <TextBlock x:Name="TxtTituloVentana"
+                                   Text="NUEVO PRODUCTO" 
+                                   FontSize="20" 
+                                   FontWeight="Black" 
+                                   Foreground="White"/>
+                        <TextBlock Text="Completa la información del producto" 
+                                   FontSize="11" 
+                                   Foreground="#FFE5E5" 
+                                   Margin="0,-3,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- INFORMACIÓN BÁSICA -->
+        <Border Grid.Row="1" 
+                Background="White"
+                CornerRadius="12"
+                Padding="20"
+                Margin="0,0,0,15"
+                BorderBrush="#DDD"
+                BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Código -->
+                <TextBlock Text="Código: *" 
+                           Grid.Row="0" Grid.Column="0"
+                           Style="{StaticResource LabelStyle}"
+                           Margin="0,0,15,0"/>
+                <TextBox x:Name="TxtCode" 
+                         Grid.Row="0" Grid.Column="1"
+                         Style="{StaticResource TextBoxStyle}"
+                         MaxLength="20"/>
+
+                <!-- Nombre -->
+                <TextBlock Text="Nombre: *" 
+                           Grid.Row="1" Grid.Column="0"
+                           Style="{StaticResource LabelStyle}"
+                           Margin="0,12,15,0"/>
+                <TextBox x:Name="TxtDescription" 
+                         Grid.Row="1" Grid.Column="1"
+                         Style="{StaticResource TextBoxStyle}"
+                         Margin="0,12,0,0"/>
+            </Grid>
+        </Border>
+
+        <!-- TAB CONTROL -->
+        <TabControl Grid.Row="2" 
+                    Margin="0,0,0,15"
+                    x:Name="MainTabControl"
+                    BorderBrush="#DDD"
+                    BorderThickness="1"
+                    Background="White">
+
+            <!-- TAB GENERAL -->
+            <TabItem Header="📋 General" Style="{StaticResource TabStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <!-- Categoría -->
+                        <TextBlock Text="Categoría:" Style="{StaticResource LabelStyle}" Margin="0,0,0,8"/>
+                        <ComboBox x:Name="CmbCategoria" 
+                                  Height="35"
+                                  FontSize="13"
+                                  BorderBrush="#FF6B35"
+                                  BorderThickness="2"
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="Id"
+                                  Margin="0,0,0,20"/>
+
+                        <!-- Descripción Breve -->
+                        <TextBlock Text="Descripción Breve:" Style="{StaticResource LabelStyle}" Margin="0,0,0,8"/>
+                        <TextBox x:Name="TxtDescripcionBreve" 
+                                 Height="35"
+                                 MaxLength="100"
+                                 Style="{StaticResource TextBoxStyle}"
+                                 Margin="0,0,0,20"
+                                 ToolTip="Descripción corta para mostrar en el menú"/>
+
+                        <!-- Observaciones -->
+                        <TextBlock Text="Observaciones:" Style="{StaticResource LabelStyle}" Margin="0,0,0,8"/>
+                        <TextBox x:Name="TxtObservaciones" 
+                                 Height="100"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 VerticalScrollBarVisibility="Auto"
+                                 BorderBrush="#FF6B35"
+                                 BorderThickness="2"
+                                 Padding="10"
+                                 FontSize="13"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB FOTO -->
+            <TabItem Header="📷 Foto" Style="{StaticResource TabStyle}">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- Imagen -->
+                    <Viewbox Grid.Row="0" 
+                             Stretch="Uniform"
+                             MaxWidth="600"
+                             MaxHeight="400">
+                        <Border x:Name="BorderImagen"
+                                BorderBrush="#FF6B35"
+                                BorderThickness="2"
+                                Background="#FFF9F0"
+                                CornerRadius="12"
+                                Width="600"
+                                Height="400">
+                            <Image x:Name="ImgProducto" 
+                                   Stretch="Uniform"/>
+                        </Border>
+                    </Viewbox>
+
+                    <!-- Placeholder -->
+                    <Grid Grid.Row="0"
+                          x:Name="PlaceholderImagen">
+                        <Viewbox Stretch="Uniform"
+                                 MaxWidth="600"
+                                 MaxHeight="400">
+                            <Grid Width="600" Height="400">
+                                <Rectangle Stroke="#FF6B35"
+                                           StrokeThickness="2"
+                                           StrokeDashArray="8,4"
+                                           Fill="#FFF9F0"
+                                           RadiusX="12"
+                                           RadiusY="12"/>
+                                <StackPanel VerticalAlignment="Center">
+                                    <TextBlock Text="📷" 
+                                               FontSize="64"
+                                               HorizontalAlignment="Center"
+                                               Foreground="#FFB366"/>
+                                    <TextBlock Text="Sin imagen" 
+                                               FontSize="18"
+                                               Foreground="#999"
+                                               HorizontalAlignment="Center"
+                                               Margin="0,15,0,0"/>
+                                </StackPanel>
+                            </Grid>
+                        </Viewbox>
+                    </Grid>
+
+                    <!-- Botones -->
+                    <StackPanel Grid.Row="1" 
+                                Orientation="Horizontal" 
+                                HorizontalAlignment="Center"
+                                Margin="0,20,0,0">
+                        <Button x:Name="BtnCargarImagen"
+                                Content="📁 Cargar Imagen" 
+                                Width="180"
+                                Click="BtnCargarImagen_Click"
+                                Style="{StaticResource ButtonStyle}"/>
+                        <Button x:Name="BtnEliminarImagen"
+                                Content="🗑️ Eliminar" 
+                                Width="150"
+                                Margin="15,0,0,0"
+                                Click="BtnEliminarImagen_Click">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                                    <Setter Property="Background" Value="#E74C3C"/>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB PRECIOS -->
+            <TabItem Header="💰 Precios" Style="{StaticResource TabStyle}">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <DataGrid x:Name="DgPrecios"
+                              Grid.Row="0"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="None"
+                              AlternatingRowBackground="#FFFAF0"
+                              RowHeight="45"
+                              BorderBrush="#DDD"
+                              BorderThickness="1">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#FF6B35"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Padding" Value="12,10"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="BorderThickness" Value="0"/>
+                                <Setter Property="Padding" Value="12,0"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="#FFE5CC"/>
+                                        <Setter Property="Foreground" Value="#333"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGrid.CellStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="Lista" Binding="{Binding NombreLista}" Width="150" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Costo" Binding="{Binding Costo, StringFormat=N2}" Width="120" IsReadOnly="False"/>
+                            <DataGridTextColumn Header="IVA" Binding="{Binding IVA}" Width="80" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="% Utilidad" Binding="{Binding PorcentajeUtilidad, StringFormat=N2}" Width="100" IsReadOnly="False"/>
+                            <DataGridTextColumn Header="Precio Venta" Binding="{Binding PrecioVenta, StringFormat=N2}" Width="120" IsReadOnly="True">
+                                <DataGridTextColumn.ElementStyle>
+                                    <Style TargetType="TextBlock">
+                                        <Setter Property="FontWeight" Value="Bold"/>
+                                        <Setter Property="Foreground" Value="#FF6B35"/>
+                                    </Style>
+                                </DataGridTextColumn.ElementStyle>
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Última Act." Binding="{Binding UltimaActualizacion, StringFormat=dd/MM/yyyy}" Width="*" IsReadOnly="True"/>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <Button Grid.Row="1"
+                            x:Name="BtnGuardarPrecios"
+                            Content="💾 Guardar Precios"
+                            Width="180"
+                            HorizontalAlignment="Left"
+                            Margin="0,15,0,0"
+                            Style="{StaticResource ButtonStyle}"
+                            Click="BtnModificar_Click"/>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB PROVEEDORES -->
+            <TabItem Header="🏭 Proveedores" Style="{StaticResource TabStyle}">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <DataGrid x:Name="DgProveedores"
+                              Grid.Row="0"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="None"
+                              RowHeight="45"
+                              BorderBrush="#DDD"
+                              BorderThickness="1"
+                              SelectionMode="Single">
+                        <DataGrid.ColumnHeaderStyle>
+                            <Style TargetType="DataGridColumnHeader">
+                                <Setter Property="Background" Value="#FF6B35"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter Property="FontWeight" Value="Bold"/>
+                                <Setter Property="Padding" Value="12,10"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                            </Style>
+                        </DataGrid.ColumnHeaderStyle>
+                        <DataGrid.Columns>
+                            <DataGridTextColumn Header="#" Binding="{Binding Numero}" Width="50" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Proveedor" Binding="{Binding NombreProveedor}" Width="*" IsReadOnly="True"/>
+                            <DataGridTextColumn Header="Costo" Binding="{Binding Costo, StringFormat=N2}" Width="120"/>
+                            <DataGridTemplateColumn Header="Predeterminado" Width="150">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="{Binding TextoPredeterminado}"
+                                                Width="130"
+                                                Height="30"
+                                                Click="BtnPredeterminado_Click"
+                                                Tag="{Binding}">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                                                    <Setter Property="FontSize" Value="11"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding EsPredeterminado}" Value="True">
+                                                            <Setter Property="Background" Value="#27AE60"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                            <DataGridTemplateColumn Header="Acciones" Width="100">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Content="🗑️"
+                                                Width="30"
+                                                Height="30"
+                                                Click="BtnQuitarProveedor_Click"
+                                                Tag="{Binding}">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                                                    <Setter Property="Background" Value="#E74C3C"/>
+                                                </Style>
+                                            </Button.Style>
+                                        </Button>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                        </DataGrid.Columns>
+                    </DataGrid>
+
+                    <StackPanel Grid.Row="1" 
+                                Orientation="Horizontal"
+                                Margin="0,15,0,0">
+                        <Button x:Name="BtnAgregarProveedor"
+                                Content="➕ Agregar Proveedor"
+                                Width="180"
+                                Style="{StaticResource ButtonStyle}"
+                                Click="BtnAgregarProveedor_Click"/>
+                        <Button x:Name="BtnGuardarProveedores"
+                                Content="💾 Guardar Cambios"
+                                Width="180"
+                                Margin="15,0,0,0"
+                                Style="{StaticResource ButtonStyle}"
+                                Click="BtnGuardarProveedores_Click"/>
+                        <TextBlock x:Name="TxtContadorProveedores"
+                                   Text="0 / 10 proveedores"
+                                   VerticalAlignment="Center"
+                                   Margin="20,0,0,0"
+                                   Foreground="#666"
+                                   FontSize="12"/>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+
+            <!-- TAB RECETA -->
+            <TabItem Header="🍔 Receta" Style="{StaticResource TabStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <!-- Título con ayuda -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            <TextBlock Text="Receta del Producto" 
+                           FontSize="16"
+                           FontWeight="Bold"
+                           Foreground="#FF6B35"
+                           VerticalAlignment="Center"/>
+                            <Button x:Name="BtnAyudaReceta"
+                        Content="❓"
+                        Margin="15,0,0,0"
+                        Click="BtnAyudaReceta_Click"
+                        Style="{StaticResource HelpButtonStyle}"
+                        ToolTip="Información sobre recetas e ingredientes"/>
+                        </StackPanel>
+
+                        <!-- Checkbox: Usa Receta -->
+                        <CheckBox x:Name="ChkUsaReceta"
+                      Content="✓ Este producto usa receta (ingredientes/insumos)"
+                      FontSize="14"
+                      FontWeight="Bold"
+                      Foreground="#FF6B35"
+                      Margin="0,0,0,20"
+                      Checked="ChkUsaReceta_CheckedChanged"
+                      Unchecked="ChkUsaReceta_CheckedChanged"/>
+
+                        <!-- Panel de Receta -->
+                        <Border x:Name="PanelReceta"
+                    Background="White"
+                    BorderBrush="#FF6B35"
+                    BorderThickness="2"
+                    CornerRadius="12"
+                    Padding="20"
+                    IsEnabled="False">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0"
+                               Text="Ingredientes/Insumos necesarios para preparar 1 unidad:"
+                               FontSize="13"
+                               FontWeight="Bold"
+                               Foreground="#666"
+                               Margin="0,0,0,15"/>
+
+                                <!-- DataGrid de Ingredientes -->
+                                <DataGrid x:Name="DgReceta"
+                              Grid.Row="1"
+                              AutoGenerateColumns="False"
+                              CanUserAddRows="False"
+                              CanUserDeleteRows="False"
+                              HeadersVisibility="Column"
+                              GridLinesVisibility="None"
+                              RowHeight="45"
+                              BorderBrush="#DDD"
+                              BorderThickness="1"
+                              MinHeight="200"
+                              MaxHeight="300"
+                              SelectionMode="Single">
+                                    <DataGrid.ColumnHeaderStyle>
+                                        <Style TargetType="DataGridColumnHeader">
+                                            <Setter Property="Background" Value="#FF6B35"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="Padding" Value="12,10"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                        </Style>
+                                    </DataGrid.ColumnHeaderStyle>
+                                    <DataGrid.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="Padding" Value="12,0"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="#FFE5CC"/>
+                                                    <Setter Property="Foreground" Value="#333"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGrid.CellStyle>
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="Código" 
+                                                Binding="{Binding RawMaterialCode}" 
+                                                Width="100" 
+                                                IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="Ingrediente/Insumo" 
+                                                Binding="{Binding RawMaterialName}" 
+                                                Width="*" 
+                                                IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="Cantidad" 
+                                                Binding="{Binding Quantity, StringFormat=N4}" 
+                                                Width="120">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="FontWeight" Value="Bold"/>
+                                                    <Setter Property="Foreground" Value="#FF6B35"/>
+                                                    <Setter Property="TextAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                            <DataGridTextColumn.EditingElementStyle>
+                                                <Style TargetType="TextBox">
+                                                    <Setter Property="TextAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.EditingElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTextColumn Header="Unidad" 
+                                                Binding="{Binding Unit}" 
+                                                Width="80" 
+                                                IsReadOnly="True"/>
+                                        <DataGridTextColumn Header="Stock Disponible" 
+                                                Binding="{Binding AvailableQuantity, StringFormat=N2}" 
+                                                Width="120" 
+                                                IsReadOnly="True">
+                                            <DataGridTextColumn.ElementStyle>
+                                                <Style TargetType="TextBlock">
+                                                    <Setter Property="Foreground" Value="#666"/>
+                                                    <Setter Property="TextAlignment" Value="Right"/>
+                                                </Style>
+                                            </DataGridTextColumn.ElementStyle>
+                                        </DataGridTextColumn>
+                                        <DataGridTemplateColumn Header="Acciones" Width="100">
+                                            <DataGridTemplateColumn.CellTemplate>
+                                                <DataTemplate>
+                                                    <Button Content="🗑️"
+                                                Width="30"
+                                                Height="30"
+                                                Click="BtnQuitarIngrediente_Click"
+                                                Tag="{Binding}">
+                                                        <Button.Style>
+                                                            <Style TargetType="Button" BasedOn="{StaticResource ButtonStyle}">
+                                                                <Setter Property="Background" Value="#E74C3C"/>
+                                                            </Style>
+                                                        </Button.Style>
+                                                    </Button>
+                                                </DataTemplate>
+                                            </DataGridTemplateColumn.CellTemplate>
+                                        </DataGridTemplateColumn>
+                                    </DataGrid.Columns>
+                                </DataGrid>
+
+                                <!-- Botones -->
+                                <StackPanel Grid.Row="2" 
+                                Orientation="Horizontal"
+                                Margin="0,15,0,0">
+                                    <Button x:Name="BtnAgregarIngrediente"
+                                Content="➕ Agregar Ingrediente"
+                                Width="180"
+                                Style="{StaticResource ButtonStyle}"
+                                Click="BtnAgregarIngrediente_Click"/>
+                                    <Button x:Name="BtnGuardarReceta"
+                                Content="💾 Guardar Receta"
+                                Width="180"
+                                Margin="15,0,0,0"
+                                Style="{StaticResource ButtonStyle}"
+                                Click="BtnGuardarReceta_Click"/>
+                                    <TextBlock x:Name="TxtContadorIngredientes"
+                                   Text="0 / 10 ingredientes"
+                                   VerticalAlignment="Center"
+                                   Margin="20,0,0,0"
+                                   Foreground="#666"
+                                   FontSize="12"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <!-- Mensaje informativo cuando no usa receta -->
+                        <Border x:Name="MensajeSinReceta"
+                    Background="#FFE5CC"
+                    BorderBrush="#FF6B35"
+                    BorderThickness="2"
+                    CornerRadius="10"
+                    Padding="20"
+                    Margin="0,20,0,0"
+                    Visibility="Visible">
+                            <StackPanel>
+                                <TextBlock Text="ℹ️ Producto sin receta" 
+                               FontSize="14"
+                               FontWeight="Bold"
+                               Foreground="#FF6B35"
+                               Margin="0,0,0,8"/>
+                                <TextBlock TextWrapping="Wrap"
+                               Foreground="#666"
+                               FontSize="12">
+                        <Run Text="Este producto no usa receta. Es ideal para:"/>
+                        <LineBreak/><LineBreak/>
+                        <Run Text="• Productos que se compran listos para vender (bebidas embotelladas, snacks)"/>
+                        <LineBreak/>
+                        <Run Text="• Items que se gestionan como unidades completas"/>
+                        <LineBreak/>
+                        <Run Text="• Productos sin preparación"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB STOCK -->
+            <TabItem Header="📊 Stock" Style="{StaticResource TabStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <!-- Título con ayuda -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            <TextBlock Text="Control de Stock" 
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="#FF6B35"
+                                       VerticalAlignment="Center"/>
+                            <Button x:Name="BtnAyudaStock"
+                                    Content="❓"
+                                    Margin="15,0,0,0"
+                                    Click="BtnAyudaStock_Click"
+                                    Style="{StaticResource HelpButtonStyle}"
+                                    ToolTip="Información sobre control de stock"/>
+                        </StackPanel>
+
+                        <!-- Checkbox: Lleva Stock -->
+                        <CheckBox x:Name="ChkLlevaStock"
+                                  Content="✓ Este producto lleva control de stock"
+                                  FontSize="14"
+                                  FontWeight="Bold"
+                                  Foreground="#FF6B35"
+                                  Margin="0,0,0,20"
+                                  Checked="ChkLlevaStock_CheckedChanged"
+                                  Unchecked="ChkLlevaStock_CheckedChanged"/>
+
+                        <!-- Panel de Stock -->
+                        <Border x:Name="PanelStock"
+                                Background="White"
+                                BorderBrush="#FF6B35"
+                                BorderThickness="2"
+                                CornerRadius="12"
+                                Padding="20"
+                                IsEnabled="False">
+                            <StackPanel>
+                                <!-- Stock Actual -->
+                                <Border Background="#FFF9F0"
+                                        BorderBrush="#FF6B35"
+                                        BorderThickness="2"
+                                        CornerRadius="10"
+                                        Padding="20"
+                                        Margin="0,0,0,20">
+                                    <StackPanel>
+                                        <TextBlock Text="Stock Actual" 
+                                                   FontSize="13"
+                                                   FontWeight="Bold"
+                                                   Foreground="#666"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,0,0,8"/>
+                                        <TextBlock x:Name="TxtStockActual" 
+                                                   Text="0"
+                                                   FontSize="48"
+                                                   FontWeight="Black"
+                                                   Foreground="#FF6B35"
+                                                   HorizontalAlignment="Center"/>
+                                        <TextBlock Text="unidades disponibles" 
+                                                   FontSize="11"
+                                                   Foreground="#999"
+                                                   HorizontalAlignment="Center"
+                                                   Margin="0,8,0,0"/>
+                                    </StackPanel>
+                                </Border>
+
+                                <!-- Stock Mínimo -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Stock Mínimo:" 
+                                                   FontWeight="Bold"
+                                                   FontSize="13"
+                                                   Margin="0,0,0,5"/>
+                                        <TextBlock Text="Alerta cuando baje de este valor" 
+                                                   FontSize="11"
+                                                   Foreground="#999"/>
+                                    </StackPanel>
+
+                                    <TextBox x:Name="TxtStockMinimo" 
+                                             Grid.Column="1"
+                                             Width="150"
+                                             HorizontalAlignment="Left"
+                                             Style="{StaticResource TextBoxStyle}"
+                                             Text="0"
+                                             TextChanged="TxtStock_TextChanged"/>
+                                </Grid>
+
+                                <!-- Stock Máximo -->
+                                <Grid Margin="0,0,0,20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Stock Máximo:" 
+                                                   FontWeight="Bold"
+                                                   FontSize="13"
+                                                   Margin="0,0,0,5"/>
+                                        <TextBlock Text="Alerta cuando supere este valor" 
+                                                   FontSize="11"
+                                                   Foreground="#999"/>
+                                    </StackPanel>
+
+                                    <TextBox x:Name="TxtStockMaximo" 
+                                             Grid.Column="1"
+                                             Width="150"
+                                             HorizontalAlignment="Left"
+                                             Style="{StaticResource TextBoxStyle}"
+                                             Text="0"
+                                             TextChanged="TxtStock_TextChanged"/>
+                                </Grid>
+
+                                <!-- Estado del Stock -->
+                                <Border x:Name="BorderEstadoStock"
+                                        Background="#F8F9FA"
+                                        BorderBrush="#CCC"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="15">
+                                    <TextBlock x:Name="TxtEstadoStock" 
+                                               Text="Configura los valores de stock para recibir alertas."
+                                               TextWrapping="Wrap"
+                                               Foreground="#666"
+                                               FontSize="12"/>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Mensaje informativo cuando no lleva stock -->
+                        <Border x:Name="MensajeSinStock"
+                                Background="#FFE5CC"
+                                BorderBrush="#FF6B35"
+                                BorderThickness="2"
+                                CornerRadius="10"
+                                Padding="20"
+                                Margin="0,20,0,0"
+                                Visibility="Visible">
+                            <StackPanel>
+                                <TextBlock Text="ℹ️ Producto sin control de stock" 
+                                           FontSize="14"
+                                           FontWeight="Bold"
+                                           Foreground="#FF6B35"
+                                           Margin="0,0,0,8"/>
+                                <TextBlock TextWrapping="Wrap"
+                                           Foreground="#666"
+                                           FontSize="12">
+                                    <Run Text="Este producto no lleva control de stock físico. Es ideal para:"/>
+                                    <LineBreak/><LineBreak/>
+                                    <Run Text="• Productos que se preparan al momento (hamburguesas, pizzas)"/>
+                                    <LineBreak/>
+                                    <Run Text="• Items que se consideran ilimitados (salsas, servilletas)"/>
+                                    <LineBreak/>
+                                    <Run Text="• Servicios o combos"/>
+                                </TextBlock>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+
+            <!-- TAB VENCIMIENTO -->
+            <TabItem Header="📅 Vencimiento" Style="{StaticResource TabStyle}">
+                <ScrollViewer VerticalScrollBarVisibility="Auto">
+                    <StackPanel Margin="20">
+                        <!-- Título con ayuda - IGUAL QUE STOCK -->
+                        <StackPanel Orientation="Horizontal" Margin="0,0,0,15">
+                            <TextBlock Text="Control de Vencimiento" 
+                                       FontSize="16"
+                                       FontWeight="Bold"
+                                       Foreground="#FF6B35"
+                                       VerticalAlignment="Center"/>
+                            <Button x:Name="BtnAyudaVencimiento"
+                                    Content="❓"
+                                    Margin="15,0,0,0"
+                                    Click="BtnAyudaVencimiento_Click"
+                                    Style="{StaticResource HelpButtonStyle}"
+                                    ToolTip="Información sobre control de vencimiento"/>
+                        </StackPanel>
+
+                        <!-- Checkbox -->
+                        <CheckBox x:Name="ChkLlevaVencimiento"
+                                  Content="✓ Este producto lleva control de vencimiento"
+                                  FontSize="14"
+                                  FontWeight="Bold"
+                                  Foreground="#FF6B35"
+                                  Margin="0,0,0,20"
+                                  Checked="ChkLlevaVencimiento_CheckedChanged"
+                                  Unchecked="ChkLlevaVencimiento_CheckedChanged"/>
+
+                        <!-- Panel de Vencimiento -->
+                        <Border Background="White"
+                                BorderBrush="#FF6B35"
+                                BorderThickness="2"
+                                CornerRadius="12"
+                                Padding="20">
+                            <StackPanel>
+                                <!-- Fecha de Vencimiento -->
+                                <Grid Margin="0,0,0,15">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Fecha de Vencimiento:" 
+                                                   FontWeight="Bold"
+                                                   FontSize="13"
+                                                   Margin="0,0,0,5"/>
+                                        <TextBlock Text="Fecha en que vence el producto" 
+                                                   FontSize="11"
+                                                   Foreground="#999"/>
+                                    </StackPanel>
+
+                                    <DatePicker x:Name="DpFechaVencimiento" 
+                                                Grid.Column="1"
+                                                Width="200"
+                                                Height="35"
+                                                HorizontalAlignment="Left"
+                                                IsEnabled="False"
+                                                SelectedDateChanged="FechaVencimiento_Changed"/>
+                                </Grid>
+
+                                <!-- Alerta Vencimiento -->
+                                <Grid Margin="0,0,0,20">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+
+                                    <StackPanel Grid.Column="0">
+                                        <TextBlock Text="Alerta Vencimiento:" 
+                                                   FontWeight="Bold"
+                                                   FontSize="13"
+                                                   Margin="0,0,0,5"/>
+                                        <TextBlock Text="Días antes para recibir alerta" 
+                                                   FontSize="11"
+                                                   Foreground="#999"/>
+                                    </StackPanel>
+
+                                    <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                        <TextBox x:Name="TxtAlertaVencimiento" 
+                                                 Width="100"
+                                                 Style="{StaticResource TextBoxStyle}"
+                                                 Text="0"
+                                                 IsEnabled="False"
+                                                 TextChanged="AlertaVencimiento_TextChanged"/>
+                                        <TextBlock Text="días antes" 
+                                                   VerticalAlignment="Center"
+                                                   Margin="15,0,0,0"
+                                                   Foreground="#666"
+                                                   FontSize="13"/>
+                                    </StackPanel>
+                                </Grid>
+
+                                <!-- Estado del Vencimiento -->
+                                <Border x:Name="BorderEstadoVencimiento"
+                                        Background="#F8F9FA"
+                                        BorderBrush="#CCC"
+                                        BorderThickness="1"
+                                        CornerRadius="8"
+                                        Padding="15">
+                                    <StackPanel>
+                                        <TextBlock Text="Estado del Vencimiento" 
+                                                   FontSize="13"
+                                                   FontWeight="Bold"
+                                                   Margin="0,0,0,10"/>
+                                        <TextBlock x:Name="TxtEstadoVencimiento" 
+                                                   Text="Active el control de vencimiento para recibir alertas sobre productos próximos a vencer."
+                                                   TextWrapping="Wrap"
+                                                   Foreground="#666"
+                                                   FontSize="12"/>
+                                    </StackPanel>
+                                </Border>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+                </ScrollViewer>
+            </TabItem>
+        </TabControl>
+
+        <!-- BOTONES INFERIORES -->
+        <StackPanel Grid.Row="3" 
+                    Orientation="Horizontal" 
+                    HorizontalAlignment="Right">
+            <Button x:Name="BtnGuardar"
+                    Content="💾 Guardar" 
+                    Width="150"
+                    Style="{StaticResource ButtonStyle}"
+                    Click="BtnGuardar_Click"
+                    IsDefault="True"/>
+            <Button x:Name="BtnCancelar"
+                    Content="✖ Cancelar" 
+                    Width="150"
+                    Style="{StaticResource CancelButtonStyle}"
+                    Click="BtnCancelar_Click"
+                    IsCancel="True"
+                    Margin="15,0,0,0"/>
+        </StackPanel>
+    </Grid>
+</Window>

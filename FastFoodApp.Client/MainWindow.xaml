@@ -1,0 +1,1056 @@
+﻿<Window x:Class="FastFoodApp.Client.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="🍔 FastFood - Sistema de Pedidos" 
+        Height="900" Width="1600"
+        MinHeight="700" MinWidth="1200"
+        WindowStartupLocation="CenterScreen"
+        WindowState="Maximized"
+        Background="#FFF5E6">
+
+    <Window.Resources>
+        <!-- Estilo para items de menú -->
+        <Style x:Key="SubMenuItemStyle" TargetType="MenuItem">
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#D32F2F"/>
+            <Setter Property="Padding" Value="12,8"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Style.Triggers>
+                <Trigger Property="IsHighlighted" Value="True">
+                    <Setter Property="Background" Value="#FF6B6B"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Estilo para botones de categoría -->
+        <Style x:Key="CategoryButton" TargetType="Button">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="#666"/>
+            <Setter Property="BorderBrush" Value="#DDD"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFF9F0"/>
+                    <Setter Property="BorderBrush" Value="#FF6B35"/>
+                </Trigger>
+                <Trigger Property="Tag" Value="Selected">
+                    <Setter Property="Background">
+                        <Setter.Value>
+                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                <GradientStop Color="#FF6B35" Offset="0"/>
+                                <GradientStop Color="#D32F2F" Offset="1"/>
+                            </LinearGradientBrush>
+                        </Setter.Value>
+                    </Setter>
+                    <Setter Property="Foreground" Value="White"/>
+                    <Setter Property="BorderBrush" Value="#D32F2F"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <!-- Estilo para cards de productos -->
+        <Style x:Key="ProductCard" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="15"/>
+            <Setter Property="Padding" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#DDDDDD" Direction="270" ShadowDepth="2" BlurRadius="8" Opacity="0.3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Estilo para tarjetas generales -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="15"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#DDDDDD" Direction="270" ShadowDepth="3" BlurRadius="10" Opacity="0.3"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="70"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- HEADER CON GRADIENTE -->
+        <Border Grid.Row="0">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                    <GradientStop Color="#D32F2F" Offset="0"/>
+                    <GradientStop Color="#FF6B35" Offset="0.5"/>
+                    <GradientStop Color="#FFC107" Offset="1"/>
+                </LinearGradientBrush>
+            </Border.Background>
+
+            <Grid Margin="20,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- LOGO Y TÍTULO -->
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🍔" FontSize="36" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                    <StackPanel>
+                        <TextBlock Text="F A S T F O O D" 
+                                   FontSize="24" 
+                                   FontWeight="Black" 
+                                   Foreground="White"/>
+                        <TextBlock Text="Sistema de Pedidos" 
+                                   FontSize="11" 
+                                   Foreground="#FFE5E5" 
+                                   Margin="0,-5,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <!-- MENÚ CENTRAL -->
+                <Menu Grid.Column="1" 
+                      Background="Transparent" 
+                      Foreground="White" 
+                      FontSize="14" 
+                      FontWeight="Bold"
+                      VerticalAlignment="Center"
+                      HorizontalAlignment="Center">
+                    <MenuItem Header="🍔 Productos">
+                        <MenuItem Header="📋 Ver Productos" Click="BtnVerArticulos_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="➕ Nuevo Producto" Click="BtnNuevoArticulo_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="✏️ Editar Producto" Click="BtnEditarArticulo_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <Separator Background="White" Opacity="0.3"/>
+                        <MenuItem Header="💰 Listas de Precios" Click="BtnVerListasPrecios_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="📈 Actualización Masiva" Click="MenuActualizacionMasivaPrecios_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                    </MenuItem>
+
+                    <MenuItem Header="🎁 Combos">
+                        <MenuItem Header="📋 Ver Combos" Click="BtnVerCombos_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="➕ Nuevo Combo" Click="BtnNuevoCombo_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                    </MenuItem>
+
+                    <MenuItem Header="📦 Inventario">
+                        <MenuItem Header="📋 Ver Insumos" Click="BtnVerInsumos_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="➕ Nuevo Insumo" Click="BtnNuevoInsumo_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <Separator Background="White" Opacity="0.3"/>
+                        <MenuItem Header="📊 Movimientos de Stock" Click="BtnMovimientosStock_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="🛒 Cargar Compra" Click="BtnCargarCompra_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="🔧 Ajuste de Inventario" Click="BtnAjusteInventario_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                    </MenuItem>
+
+                    <MenuItem Header="🏭 Proveedores">
+                        <MenuItem Header="📋 Ver Proveedores" Click="BtnVerProveedores_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="➕ Nuevo Proveedor" Click="BtnNuevoProveedor_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                    </MenuItem>
+
+                    <MenuItem Header="📦 Inventario">
+                        <MenuItem Header="📊 Movimientos de Stock" Click="BtnMovimientosStock_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="🛒 Cargar Compra" Click="BtnCargarCompra_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                        <MenuItem Header="🔧 Ajuste de Inventario" Click="BtnAjusteInventario_Click" Style="{StaticResource SubMenuItemStyle}"/>
+                    </MenuItem>
+
+                    <MenuItem Header="👨‍🍳 Cocina" Click="BtnVerCocina_Click"/>
+                    <MenuItem Header="📋 Pedidos Hoy" Click="BtnPedidosHoy_Click"/>
+                    <MenuItem Header="📊 Historial" Click="BtnHistorialVentas_Click"/>
+                </Menu>
+
+                <!-- INFO DERECHA -->
+                <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Background="#FFFFFF22" 
+                            CornerRadius="20" 
+                            Padding="8,4"
+                            Margin="0,0,10,0">
+                        <StackPanel>
+                            <TextBlock x:Name="TxtLicense" 
+                                       Text="Demo" 
+                                       Foreground="White" 
+                                       FontWeight="Bold" 
+                                       FontSize="11"
+                                       HorizontalAlignment="Center"/>
+                            <TextBlock x:Name="TxtExpires" 
+                                       Text="30 días" 
+                                       Foreground="#FFE5E5" 
+                                       FontSize="9"
+                                       HorizontalAlignment="Center"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Background="#FFFFFF22" 
+                            CornerRadius="20" 
+                            Padding="12,6"
+                            Margin="0,0,10,0">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="⏰" FontSize="16" Margin="0,0,8,0"/>
+                            <TextBlock x:Name="TxtHora" 
+                                       Text="12:00" 
+                                       Foreground="White" 
+                                       FontWeight="Bold" 
+                                       FontSize="14"/>
+                        </StackPanel>
+                    </Border>
+
+                    <Button Content="🔑" 
+                            Background="#FFFFFF22" 
+                            Foreground="White" 
+                            BorderThickness="0"
+                            Width="40" Height="40"
+                            FontSize="18"
+                            Cursor="Hand"
+                            Click="BtnIngresarClave_Click"
+                            ToolTip="Licencia">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border Background="{TemplateBinding Background}"
+                                        CornerRadius="20"
+                                        Width="{TemplateBinding Width}"
+                                        Height="{TemplateBinding Height}">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                </Border>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- CONTENIDO PRINCIPAL -->
+        <Grid Grid.Row="1" Margin="20">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="1.2*"/>
+                <ColumnDefinition Width="0.9*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- COLUMNA 1: MENÚ DE PRODUCTOS -->
+            <Border Grid.Column="0" Style="{StaticResource CardStyle}" Margin="0,0,10,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- TÍTULO Y LISTA DE PRECIOS -->
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="🍽️ SELECCIONAR PRODUCTOS" 
+                                   FontSize="18" 
+                                   FontWeight="Black" 
+                                   Foreground="#FF6B35"/>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                            <TextBlock Text="💰 Lista:" 
+                                       VerticalAlignment="Center" 
+                                       FontWeight="SemiBold" 
+                                       Foreground="#666"
+                                       Margin="0,0,8,0"/>
+                            <ComboBox x:Name="CmbListaPrecios"
+                                      Width="150"
+                                      Height="35"
+                                      DisplayMemberPath="Name"
+                                      SelectedValuePath="Id"
+                                      SelectionChanged="CmbListaPrecios_SelectionChanged"
+                                      BorderBrush="#FF6B35"
+                                      BorderThickness="2"
+                                      FontSize="12"
+                                      FontWeight="SemiBold"
+                                      VerticalContentAlignment="Center"
+                                      Padding="10,0">
+                                <ComboBox.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="8"/>
+                                    </Style>
+                                </ComboBox.Resources>
+                            </ComboBox>
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- BOTONES DE CATEGORÍAS -->
+                    <WrapPanel Grid.Row="1" Margin="0,0,0,15" x:Name="PanelCategorias">
+                        <!-- Se llenarán dinámicamente desde código -->
+                    </WrapPanel>
+
+                    <!-- GRID DE PRODUCTOS (CARDS) -->
+                    <ScrollViewer Grid.Row="2" 
+                                  VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Disabled">
+                        <ItemsControl x:Name="ProductosItemsControl">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource ProductCard}"
+                                            Width="200" 
+                                            Height="240"
+                                            Margin="8"
+                                            MouseLeftButtonDown="ProductCard_Click"
+                                            Tag="{Binding}">
+                                        <Border.Triggers>
+                                            <EventTrigger RoutedEvent="MouseEnter">
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                         To="1.05" Duration="0:0:0.2"/>
+                                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                                         To="1.05" Duration="0:0:0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                            <EventTrigger RoutedEvent="MouseLeave">
+                                                <BeginStoryboard>
+                                                    <Storyboard>
+                                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleX)"
+                                                                         To="1.0" Duration="0:0:0.2"/>
+                                                        <DoubleAnimation Storyboard.TargetProperty="(UIElement.RenderTransform).(ScaleTransform.ScaleY)"
+                                                                         To="1.0" Duration="0:0:0.2"/>
+                                                    </Storyboard>
+                                                </BeginStoryboard>
+                                            </EventTrigger>
+                                        </Border.Triggers>
+                                        <Border.RenderTransform>
+                                            <ScaleTransform ScaleX="1" ScaleY="1" CenterX="100" CenterY="120"/>
+                                        </Border.RenderTransform>
+
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="140"/>
+                                                <RowDefinition Height="*"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!-- IMAGEN DEL PRODUCTO -->
+                                            <Border Grid.Row="0" 
+                                                    Background="#FFF9F0"
+                                                    CornerRadius="15,15,0,0">
+                                                <TextBlock Text="{Binding Icon}" 
+                                                           FontSize="72"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+                                            </Border>
+
+                                            <!-- INFO DEL PRODUCTO -->
+                                            <Grid Grid.Row="1" Margin="12">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+
+                                                <TextBlock Grid.Row="0"
+                                                           Text="{Binding Name}" 
+                                                           FontSize="13"
+                                                           FontWeight="Bold"
+                                                           Foreground="#333"
+                                                           TextWrapping="Wrap"
+                                                           MaxHeight="35"
+                                                           TextTrimming="CharacterEllipsis"/>
+
+                                                <TextBlock Grid.Row="1"
+                                                           Text="{Binding ShortDescription}" 
+                                                           FontSize="10"
+                                                           Foreground="#999"
+                                                           TextWrapping="Wrap"
+                                                           MaxHeight="30"
+                                                           TextTrimming="CharacterEllipsis"
+                                                           Margin="0,4,0,0"/>
+
+                                                <Border Grid.Row="2"
+                                                        Background="#FF6B35"
+                                                        CornerRadius="8"
+                                                        Padding="8,4"
+                                                        Margin="0,4,0,0">
+                                                    <TextBlock Text="{Binding Price, StringFormat=C}" 
+                                                               FontSize="16"
+                                                               FontWeight="Black"
+                                                               Foreground="White"
+                                                               HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </Grid>
+
+                                            <!-- INDICADOR DE STOCK BAJO -->
+                                            <Border Grid.Row="1"
+                                                    Background="#E74C3C"
+                                                    CornerRadius="12"
+                                                    Padding="8,4"
+                                                    HorizontalAlignment="Right"
+                                                    VerticalAlignment="Top"
+                                                    Margin="0,-15,10,0"
+                                                    Visibility="{Binding LowStockVisibility}">
+                                                <TextBlock Text="⚠️ Poco Stock" 
+                                                           FontSize="9"
+                                                           FontWeight="Bold"
+                                                           Foreground="White"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Border>
+
+            <!-- COLUMNA 2: PEDIDO ACTUAL -->
+            <Border Grid.Column="1" Style="{StaticResource CardStyle}" Margin="0,0,10,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <!-- HEADER DEL PEDIDO -->
+                    <Grid Grid.Row="0" Margin="0,0,0,15">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0"
+                                   Text="📋 PEDIDO ACTUAL" 
+                                   FontSize="16" 
+                                   FontWeight="Black" 
+                                   Foreground="#FF6B35"
+                                   VerticalAlignment="Center"/>
+
+                        <!-- Número de Pedido -->
+                        <Border Grid.Column="1"
+                                Padding="15,8"
+                                CornerRadius="12">
+                            <Border.Background>
+                                <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                                    <GradientStop Color="#FF6B35" Offset="0"/>
+                                    <GradientStop Color="#FFC107" Offset="1"/>
+                                </LinearGradientBrush>
+                            </Border.Background>
+
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="#" 
+                                           FontSize="14" 
+                                           FontWeight="Bold" 
+                                           Foreground="White"
+                                           Opacity="0.8"
+                                           VerticalAlignment="Center"
+                                           Margin="0,0,3,0"/>
+                                <TextBlock x:Name="TxtNumeroPedido" 
+                                           Text="001" 
+                                           FontSize="22" 
+                                           FontWeight="Black" 
+                                           Foreground="White"/>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
+
+                    <!-- LISTA DE ITEMS DEL PEDIDO -->
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl x:Name="PedidoItemsControl">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Background="White"
+                                            BorderBrush="#EEEEEE"
+                                            BorderThickness="0,0,0,1"
+                                            Padding="10"
+                                            Margin="0,0,0,5">
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="40"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+
+                                            <!-- CANTIDAD -->
+                                            <Border Grid.Column="0" 
+                                                    Grid.RowSpan="2"
+                                                    Background="#FF6B35"
+                                                    CornerRadius="8"
+                                                    Width="35" 
+                                                    Height="35"
+                                                    VerticalAlignment="Top">
+                                                <TextBlock Text="{Binding Cantidad}" 
+                                                           FontSize="16"
+                                                           FontWeight="Bold"
+                                                           Foreground="White"
+                                                           HorizontalAlignment="Center"
+                                                           VerticalAlignment="Center"/>
+                                            </Border>
+
+                                            <!-- NOMBRE DEL PRODUCTO -->
+                                            <TextBlock Grid.Column="1" 
+                                                       Grid.Row="0"
+                                                       Text="{Binding Name}" 
+                                                       FontSize="13"
+                                                       FontWeight="SemiBold"
+                                                       Foreground="#333"
+                                                       TextWrapping="Wrap"
+                                                       Margin="10,0,0,2"/>
+
+                                            <!-- NOTAS/CUSTOMIZACIONES -->
+                                            <TextBlock Grid.Column="1" 
+                                                       Grid.Row="1"
+                                                       Text="{Binding CustomizacionesTexto}" 
+                                                       FontSize="10"
+                                                       FontStyle="Italic"
+                                                       Foreground="#999"
+                                                       TextWrapping="Wrap"
+                                                       Margin="10,0,0,0"
+                                                       Visibility="{Binding HasCustomizations}"/>
+
+                                            <!-- PRECIO -->
+                                            <StackPanel Grid.Column="2" 
+                                                        Grid.RowSpan="2"
+                                                        VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Subtotal, StringFormat=C}" 
+                                                           FontSize="14"
+                                                           FontWeight="Bold"
+                                                           Foreground="#FF6B35"
+                                                           HorizontalAlignment="Right"/>
+
+                                                <StackPanel Orientation="Horizontal" 
+                                                            HorizontalAlignment="Right"
+                                                            Margin="0,5,0,0">
+                                                    <Button Content="✏️" 
+                                                            Width="30" Height="30"
+                                                            Margin="0,0,5,0"
+                                                            ToolTip="Editar"
+                                                            Tag="{Binding}"
+                                                            Click="BtnEditarItem_Click"
+                                                            Background="#3498DB"
+                                                            Foreground="White"
+                                                            BorderThickness="0"
+                                                            FontSize="12"
+                                                            Cursor="Hand">
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}"
+                                                                        CornerRadius="6">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+
+                                                    <Button Content="🗑️" 
+                                                            Width="30" Height="30"
+                                                            ToolTip="Eliminar"
+                                                            Tag="{Binding}"
+                                                            Click="BtnEliminarItem_Click"
+                                                            Background="#E74C3C"
+                                                            Foreground="White"
+                                                            BorderThickness="0"
+                                                            FontSize="12"
+                                                            Cursor="Hand">
+                                                        <Button.Template>
+                                                            <ControlTemplate TargetType="Button">
+                                                                <Border Background="{TemplateBinding Background}"
+                                                                        CornerRadius="6">
+                                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                                </Border>
+                                                            </ControlTemplate>
+                                                        </Button.Template>
+                                                    </Button>
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+
+                    <!-- MENSAJE SI ESTÁ VACÍO -->
+                    <StackPanel Grid.Row="1" 
+                                x:Name="PedidoVacioPanel"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center">
+                        <TextBlock Text="🛒" 
+                                   FontSize="64"
+                                   HorizontalAlignment="Center"
+                                   Opacity="0.3"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="Pedido vacío" 
+                                   FontSize="16"
+                                   FontWeight="SemiBold"
+                                   Foreground="#CCC"
+                                   HorizontalAlignment="Center"/>
+                        <TextBlock Text="Selecciona productos del menú" 
+                                   FontSize="12"
+                                   Foreground="#DDD"
+                                   HorizontalAlignment="Center"
+                                   Margin="0,5,0,0"/>
+                    </StackPanel>
+
+                    <!-- SEPARADOR -->
+                    <Border Grid.Row="2"
+                            Background="#EEEEEE"
+                            Height="2"
+                            Margin="0,10,0,10"
+                            CornerRadius="1"/>
+                    <!-- DATOS DEL CLIENTE - CORREGIDO -->
+                    <Grid Grid.Row="3">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="10"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- NOMBRE DEL CLIENTE -->
+                        <TextBlock Grid.Row="0"
+               Text="👤 Cliente" 
+               FontSize="12" 
+               FontWeight="SemiBold" 
+               Foreground="#666"
+               Margin="0,0,0,8"/>
+
+                        <TextBox x:Name="TxtCliente" 
+             Grid.Row="1"
+             Text="Cliente"
+             BorderBrush="#DDD"
+             BorderThickness="2" 
+             Height="35"
+             Padding="10,0"
+             FontSize="12"
+             VerticalContentAlignment="Center"
+             Margin="0,0,0,0">
+                            <TextBox.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+
+                        <!-- SEPARADOR (Grid.Row="2" ya definido como Height="10") -->
+
+                        <!-- TELÉFONO DEL CLIENTE -->
+                        <TextBlock Grid.Row="3"
+               Text="📞 Teléfono" 
+               FontSize="12" 
+               FontWeight="SemiBold" 
+               Foreground="#666"
+               Margin="0,0,0,8"/>
+
+                        <TextBox x:Name="TxtTelefono" 
+             Grid.Row="4"
+             BorderBrush="#DDD"
+             BorderThickness="2" 
+             Height="35"
+             Padding="10,0"
+             FontSize="12"
+             VerticalContentAlignment="Center"
+             MaxLength="15">
+                            <TextBox.Resources>
+                                <Style TargetType="Border">
+                                    <Setter Property="CornerRadius" Value="8"/>
+                                </Style>
+                            </TextBox.Resources>
+                        </TextBox>
+                    </Grid>
+                </Grid>
+            </Border>
+
+            <!-- COLUMNA 3: RESUMEN Y PAGO (MANTENER IGUAL) -->
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <!-- RESUMEN DEL PEDIDO -->
+                <Border Grid.Row="0" 
+                        Margin="0,0,0,15"
+                        CornerRadius="15"
+                        Padding="0">
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                            <GradientStop Color="#1A1A1A" Offset="0"/>
+                            <GradientStop Color="#2D2D2D" Offset="1"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+
+                    <Grid Margin="25">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="20"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <!-- TOTAL -->
+                        <Grid Grid.Row="0">
+                            <TextBlock Text="TOTAL A PAGAR" 
+                                       Foreground="#BBB" 
+                                       FontSize="14" 
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,10"/>
+                        </Grid>
+
+                        <TextBlock x:Name="TxtTotal" 
+                                   Grid.Row="2"
+                                   Text="$0.00" 
+                                   Foreground="#4CAF50" 
+                                   FontSize="48" 
+                                   FontWeight="Black" 
+                                   HorizontalAlignment="Center"
+                                   Margin="0,10,0,20"/>
+
+                        <!-- BOTÓN ENVIAR A COCINA -->
+                        <Button x:Name="BtnEnviarCocina" 
+                                Grid.Row="2"
+                                Content="🍳 ENVIAR A COCINA" 
+                                Click="BtnEnviarCocina_Click" 
+                                Height="65"
+                                FontSize="18" 
+                                FontWeight="Black"
+                                Margin="0,80,0,0"
+                                Cursor="Hand"
+                                IsEnabled="False">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background">
+                                        <Setter.Value>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#66BB6A" Offset="0"/>
+                                                <GradientStop Color="#4CAF50" Offset="1"/>
+                                            </LinearGradientBrush>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Setter Property="Foreground" Value="White"/>
+                                    <Setter Property="BorderThickness" Value="0"/>
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}"
+                                                        CornerRadius="12">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background">
+                                                <Setter.Value>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                        <GradientStop Color="#81C784" Offset="0"/>
+                                                        <GradientStop Color="#66BB6A" Offset="1"/>
+                                                    </LinearGradientBrush>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Trigger>
+                                        <Trigger Property="IsEnabled" Value="False">
+                                            <Setter Property="Background" Value="#CCCCCC"/>
+                                            <Setter Property="Foreground" Value="#888888"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- BOTONES RÁPIDOS -->
+                <Border Grid.Row="1" 
+                        Style="{StaticResource CardStyle}"
+                        Margin="0,0,0,15">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0" 
+                                Content="📄 Nuevo&#x0a;Pedido" 
+                                Click="BtnNuevoPedido_Click"
+                                Height="60" 
+                                Margin="0,0,5,0" 
+                                FontSize="11" 
+                                FontWeight="Bold"
+                                Background="White"
+                                Foreground="#FF6B35"
+                                BorderBrush="#FF6B35"
+                                BorderThickness="2"
+                                Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}"
+                                            BorderBrush="{TemplateBinding BorderBrush}"
+                                            BorderThickness="{TemplateBinding BorderThickness}"
+                                            CornerRadius="8">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="White"/>
+                                    <Setter Property="Foreground" Value="#FF6B35"/>
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="#FF6B35"/>
+                                            <Setter Property="Foreground" Value="White"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <Button Grid.Column="1" 
+                                Content="👨‍🍳 Ver&#x0a;Cocina" 
+                                Click="BtnVerCocina_Click"
+                                Height="60" 
+                                Margin="5,0,0,0" 
+                                FontSize="11" 
+                                FontWeight="Bold"
+                                Background="#FF9800"
+                                Foreground="White"
+                                BorderThickness="0"
+                                Cursor="Hand">
+                            <Button.Template>
+                                <ControlTemplate TargetType="Button">
+                                    <Border Background="{TemplateBinding Background}"
+                                            CornerRadius="8">
+                                        <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    </Border>
+                                </ControlTemplate>
+                            </Button.Template>
+                        </Button>
+                    </Grid>
+                </Border>
+
+                <!-- ACCIONES RÁPIDAS -->
+                <Border Grid.Row="2" 
+                        Style="{StaticResource CardStyle}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <StackPanel>
+                            <TextBlock Text="⚡ ACCIONES RÁPIDAS" 
+                                       FontSize="13" 
+                                       FontWeight="Bold" 
+                                       Foreground="#FF6B35" 
+                                       HorizontalAlignment="Center" 
+                                       Margin="0,0,0,15"/>
+
+                            <Button Content="📋 Pedidos del Día" 
+                                    Click="BtnPedidosHoy_Click"
+                                    Height="40" 
+                                    Margin="0,0,0,8" 
+                                    FontSize="11" 
+                                    FontWeight="Bold"
+                                    Background="White"
+                                    Foreground="#FF6B35"
+                                    BorderBrush="#FF6B35"
+                                    BorderThickness="2"
+                                    Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="White"/>
+                                        <Setter Property="Foreground" Value="#FF6B35"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#FF6B35"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button Content="📊 Historial" 
+                                    Click="BtnHistorialVentas_Click"
+                                    Height="40" 
+                                    Margin="0,0,0,8" 
+                                    FontSize="11" 
+                                    FontWeight="Bold"
+                                    Background="White"
+                                    Foreground="#9C27B0"
+                                    BorderBrush="#9C27B0"
+                                    BorderThickness="2"
+                                    Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="White"/>
+                                        <Setter Property="Foreground" Value="#9C27B0"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#9C27B0"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <Button x:Name="BtnCancelar" 
+                                    Content="❌ Cancelar Pedido" 
+                                    Click="BtnCancelar_Click"
+                                    Height="40" 
+                                    Margin="0,0,0,15" 
+                                    FontSize="11" 
+                                    FontWeight="Bold"
+                                    Background="#FFEBEE"
+                                    Foreground="#E74C3C"
+                                    BorderBrush="#E74C3C"
+                                    BorderThickness="2"
+                                    Cursor="Hand">
+                                <Button.Template>
+                                    <ControlTemplate TargetType="Button">
+                                        <Border Background="{TemplateBinding Background}"
+                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                CornerRadius="8">
+                                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </Button.Template>
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Background" Value="#FFEBEE"/>
+                                        <Setter Property="Foreground" Value="#E74C3C"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="#E74C3C"/>
+                                                <Setter Property="Foreground" Value="White"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+
+                            <!-- SEPARADOR -->
+                            <Border Height="2" 
+                                    Background="#EEEEEE" 
+                                    Margin="0,5,0,15"
+                                    CornerRadius="1"/>
+
+                            <!-- BRANDING -->
+                            <Border Background="#FFF9F0"
+                                    CornerRadius="12"
+                                    Padding="15">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="🍔" 
+                                               FontSize="40" 
+                                               HorizontalAlignment="Center"
+                                               Margin="0,0,0,8"/>
+
+                                    <TextBlock Text="F A S T F O O D" 
+                                               FontSize="14" 
+                                               FontWeight="Black" 
+                                               Foreground="#FF6B35" 
+                                               HorizontalAlignment="Center"
+                                               Margin="0,0,0,4"/>
+
+                                    <TextBlock Text="Sistema de Pedidos" 
+                                               FontSize="9" 
+                                               Foreground="#999" 
+                                               HorizontalAlignment="Center"
+                                               Margin="0,0,0,6"/>
+
+                                    <Border Background="#FF6B35"
+                                            CornerRadius="10"
+                                            Padding="10,3">
+                                        <TextBlock Text="v1.0.0" 
+                                                   FontSize="9" 
+                                                   FontWeight="Bold"
+                                                   Foreground="White" 
+                                                   HorizontalAlignment="Center"/>
+                                    </Border>
+
+                                    <!-- STATS RÁPIDAS -->
+                                    <Grid Margin="0,15,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+
+                                        <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                            <TextBlock Text="📊" FontSize="18"/>
+                                            <TextBlock x:Name="TxtPedidosHoy" 
+                                                       Text="0" 
+                                                       FontSize="18" 
+                                                       FontWeight="Bold"
+                                                       Foreground="#FF6B35"
+                                                       HorizontalAlignment="Center"/>
+                                            <TextBlock Text="Hoy" 
+                                                       FontSize="9" 
+                                                       Foreground="#999"
+                                                       HorizontalAlignment="Center"/>
+                                        </StackPanel>
+
+                                        <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                            <TextBlock Text="⏰" FontSize="18"/>
+                                            <TextBlock x:Name="TxtPendientes" 
+                                                       Text="0" 
+                                                       FontSize="18" 
+                                                       FontWeight="Bold"
+                                                       Foreground="#4CAF50"
+                                                       HorizontalAlignment="Center"/>
+                                            <TextBlock Text="Activos" 
+                                                       FontSize="9" 
+                                                       Foreground="#999"
+                                                       HorizontalAlignment="Center"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

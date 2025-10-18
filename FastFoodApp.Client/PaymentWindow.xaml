@@ -1,0 +1,140 @@
+﻿<Window x:Class="FastFoodApp.Client.PaymentWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Configuración de Pago" 
+        Height="600" Width="492"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="#ECF0F1">
+
+    <Grid Margin="20">
+        <Grid.ColumnDefinitions>
+            <!-- Columna izquierda: inputs -->
+            <ColumnDefinition Width="2*"/>
+            <!-- Columna derecha: resumen -->
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- ===================== IZQUIERDA ===================== -->
+        <StackPanel Grid.Column="0" Margin="0,0,5,0">
+
+            <!-- EFECTIVO -->
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Efectivo:" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBox x:Name="TxtEfectivo" Grid.Column="1" Height="30" VerticalContentAlignment="Center"/>
+            </Grid>
+
+            <!-- TARJETA DE CRÉDITO -->
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Tarjeta Crédito:" VerticalAlignment="Center" FontWeight="Bold" Height="45"/>
+                <StackPanel Grid.Column="1">
+                    <TextBox x:Name="TxtTarjetaCredito" Height="30" VerticalContentAlignment="Center" Margin="0,0,0,5"/>
+                    <ComboBox x:Name="CmbTipoTarjeta" Height="30">
+                        <ComboBoxItem Content="Visa"/>
+                        <ComboBoxItem Content="Mastercard"/>
+                        <ComboBoxItem Content="Amex"/>
+                        <ComboBoxItem Content="Otra"/>
+                    </ComboBox>
+                </StackPanel>
+            </Grid>
+
+            <!-- CUENTA CORRIENTE -->
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Cuenta Corriente:" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBox x:Name="TxtCuentaCorriente" Grid.Column="1" Height="30" VerticalContentAlignment="Center" IsEnabled="False"/>
+            </Grid>
+
+            <!-- CHEQUE -->
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Cheque:" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBox x:Name="TxtCheque" Grid.Column="1" Height="30" VerticalContentAlignment="Center"/>
+            </Grid>
+
+            <!-- TICKETS -->
+            <Grid Margin="0,5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="150"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Tickets:" VerticalAlignment="Center" FontWeight="Bold"/>
+                <TextBox x:Name="TxtTickets" Grid.Column="1" Height="30" VerticalContentAlignment="Center"/>
+            </Grid>
+
+            <!-- BOTONES DE MONTOS RÁPIDOS -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,15,0,15">
+                <Button Content="5" Width="50" Margin="5" Click="BtnAgregar5_Click"/>
+                <Button Content="10" Width="50" Margin="5" Click="BtnAgregar10_Click"/>
+                <Button Content="20" Width="50" Margin="5" Click="BtnAgregar20_Click"/>
+                <Button Content="50" Width="50" Margin="5" Click="BtnAgregar50_Click"/>
+                <Button Content="100" Width="60" Margin="5" Click="BtnAgregar100_Click"/>
+
+            </StackPanel>
+
+            <!-- SEPARADOR -->
+            <Separator Margin="0,10"/>
+
+            <!-- BOTONES CONFIRMAR / CANCELAR -->
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,10">
+                <Button x:Name="BtnConfirmar" Content="✓ CONFIRMAR" 
+                        Width="150" Height="45" Margin="10"
+                        Background="#27AE60" Foreground="White" FontWeight="Bold"/>
+                <Button x:Name="BtnCancelar" Content="❌ CANCELAR" 
+                        Width="150" Height="45" Margin="10"
+                        Background="#E74C3C" Foreground="White" FontWeight="Bold"/>
+            </StackPanel>
+        </StackPanel>
+
+        <!-- ===================== DERECHA ===================== -->
+        <StackPanel Grid.Column="1" VerticalAlignment="Top" >
+
+            <!-- TOTAL A PAGAR -->
+            <StackPanel Margin="0,0,0,15">
+                <TextBlock Text="TOTAL A PAGAR" Background="#3498DB" Foreground="White" 
+                           FontWeight="Bold" TextAlignment="Center" Padding="5"/>
+                <Border Background="Black" Padding="15">
+                    <TextBlock x:Name="LblTotalAPagar" Text="$0.00" 
+                               Foreground="White" FontSize="24" FontWeight="Bold" 
+                               HorizontalAlignment="Center"/>
+                </Border>
+            </StackPanel>
+
+            <!-- TOTAL PAGADO -->
+            <StackPanel Margin="0,0,0,15">
+                <TextBlock Text="TOTAL PAGADO" Background="#3498DB" Foreground="White" 
+                           FontWeight="Bold" TextAlignment="Center" Padding="5"/>
+                <Border Background="Black" Padding="15">
+                    <TextBlock x:Name="LblTotalPagado" Text="$0.00" 
+                               Foreground="White" FontSize="24" FontWeight="Bold" 
+                               HorizontalAlignment="Center"/>
+                </Border>
+            </StackPanel>
+
+            <!-- RESTA PAGAR -->
+            <StackPanel>
+                <TextBlock Text="RESTA PAGAR" Background="#3498DB" Foreground="White" 
+                           FontWeight="Bold" TextAlignment="Center" Padding="5"/>
+                <Border Background="Black" Padding="15">
+                    <TextBlock x:Name="LblRestaPagar" Text="$0.00" 
+                               Foreground="White" FontSize="24" FontWeight="Bold" 
+                               HorizontalAlignment="Center"/>
+                </Border>
+            </StackPanel>
+        </StackPanel>
+    </Grid>
+</Window>

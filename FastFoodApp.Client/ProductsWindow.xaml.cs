@@ -1,0 +1,346 @@
+﻿using FastFoodApp.Core.Data;
+using FastFoodApp.Core.Models;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Globalization;
+using System.Linq;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+
+namespace FastFoodApp.Client
+{
+    public partial class ProductsWindow : Window
+    {
+        private bool _mostrarDiscontinuados = false;
+
+        public ProductsWindow()
+        {
+            InitializeComponent();
+            GridProducts.SelectionChanged += GridProducts_SelectionChanged;
+            Loaded += (s, e) => {
+                CargarCategorias();
+                CargarProductos();
+            };
+        }
+
+        private void CargarCategorias()
+        {
+            using var ctx = new AppDbContext();
+
+            var categorias = ctx.Categories
+                .Where(c => c.IsActive)
+                .OrderBy(c => c.Name)
+                .Select(c => c.Name)
+                .ToList();
+
+            CmbCategoria.Items.Clear();
+            CmbCategoria.Items.Add("Todas");
+
+            foreach (var cat in categorias)
+            {
+                CmbCategoria.Items.Add(cat);
+            }
+
+            CmbCategoria.SelectedIndex = 0;
+        }
+
+        private void CargarProductos()
+        {
+            if (GridProducts == null) return;
+
+            using var ctx = new AppDbContext();
+
+            IQueryable<Product> query = ctx.Products
+                .Include(p => p.Category);
+
+            // Filtrar por texto de búsqueda
+            if (TxtBuscar != null && !string.IsNullOrWhiteSpace(TxtBuscar.Text))
+            {
+                var textoBusqueda = TxtBuscar.Text.ToLower().Trim();
+                query = query.Where(p =>
+                    p.Code.ToLower().Contains(textoBusqueda) ||
+                    p.Name.ToLower().Contains(textoBusqueda));
+            }
+
+            // Filtrar por categoría
+            if (CmbCategoria != null && CmbCategoria.SelectedItem != null)
+            {
+                var categoriaSeleccionada = CmbCategoria.SelectedItem.ToString();
+                if (!string.IsNullOrEmpty(categoriaSeleccionada) && categoriaSeleccionada != "Todas")
+                {
+                    query = query.Where(p => p.Category != null && p.Category.Name == categoriaSeleccionada);
+                }
+            }
+
+            // Filtrar por estado
+            if (!_mostrarDiscontinuados)
+            {
+                query = query.Where(p => p.IsActive);
+            }
+
+            var productos = query.OrderBy(p => p.Name).ToList();
+
+            // Obtener precios de la lista "General" (ID = 1)
+            var precios = ctx.ProductPriceLists
+                .Where(ppl => ppl.PriceListId == 1)
+                .ToDictionary(ppl => ppl.ProductId, ppl => ppl.SalePrice);
+
+            // Crear ViewModels con la información calculada
+            var productosViewModel = productos.Select(p => new ProductViewModel
+            {
+                Product = p,
+                DisplayPrice = precios.ContainsKey(p.Id) ? precios[p.Id] : 0m,
+                TracksStock = p.TracksStock,
+                StockDisplay = p.TracksStock ? (p.Stock?.ToString() ?? "0") : "-"
+            }).ToList();
+
+            GridProducts.ItemsSource = productosViewModel;
+        }
+
+        private void GridProducts_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (GridProducts.SelectedItem is ProductViewModel prodVm)
+            {
+                var prod = prodVm.Product;
+                BtnDiscontinuar.Visibility = prod.IsActive ? Visibility.Visible : Visibility.Collapsed;
+                BtnReactivar.Visibility = prod.IsActive ? Visibility.Collapsed : Visibility.Visible;
+
+                if (GridProducts.ContextMenu != null)
+                {
+                    foreach (var item in GridProducts.ContextMenu.Items)
+                    {
+                        if (item is MenuItem menuItem)
+                        {
+                            if (menuItem.Name == "MenuDiscontinuar")
+                                menuItem.Visibility = prod.IsActive ? Visibility.Visible : Visibility.Collapsed;
+                            else if (menuItem.Name == "MenuReactivar")
+                                menuItem.Visibility = prod.IsActive ? Visibility.Collapsed : Visibility.Visible;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                BtnDiscontinuar.Visibility = Visibility.Visible;
+                BtnReactivar.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void BtnNuevo_Click(object sender, RoutedEventArgs e)
+        {
+            var dlg = new ProductDialog();
+            if (dlg.ShowDialog() == true)
+            {
+                CargarProductos();
+            }
+        }
+
+        private void BtnModificar_Click(object sender, RoutedEventArgs e)
+        {
+            if (GridProducts.SelectedItem is ProductViewModel prodVm)
+            {
+                var dlg = new ProductDialog(prodVm.Product);
+                if (dlg.ShowDialog() == true)
+                {
+                    CargarProductos();
+                }
+            }
+            else
+            {
+                MessageBox.Show("Seleccione un producto para modificar.", "Información",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void BtnDiscontinuar_Click(object sender, RoutedEventArgs e)
+        {
+            if (GridProducts.SelectedItem is ProductViewModel prodVm)
+            {
+                var prod = prodVm.Product;
+                var result = MessageBox.Show(
+                    $"¿Está seguro que desea discontinuar el producto '{prod.Name}'?\n\n" +
+                    "El producto no aparecerá en las ventas pero se mantendrá en el historial.",
+                    "Confirmar Discontinuar",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    using var ctx = new AppDbContext();
+                    var p = ctx.Products.FirstOrDefault(x => x.Id == prod.Id);
+                    if (p != null)
+                    {
+                        p.IsActive = false;
+                        ctx.SaveChanges();
+                        CargarProductos();
+                        MessageBox.Show("✓ Producto discontinuado correctamente.", "Éxito",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Seleccione un producto para discontinuar.", "Información",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void BtnReactivar_Click(object sender, RoutedEventArgs e)
+        {
+            if (GridProducts.SelectedItem is ProductViewModel prodVm)
+            {
+                var prod = prodVm.Product;
+                var result = MessageBox.Show(
+                    $"¿Desea reactivar el producto '{prod.Name}'?",
+                    "Confirmar Reactivación",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    using var ctx = new AppDbContext();
+                    var p = ctx.Products.FirstOrDefault(x => x.Id == prod.Id);
+                    if (p != null)
+                    {
+                        p.IsActive = true;
+                        ctx.SaveChanges();
+                        CargarProductos();
+                        MessageBox.Show("✓ Producto reactivado correctamente.", "Éxito",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+            }
+            else
+            {
+                MessageBox.Show("Seleccione un producto para reactivar.", "Información",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+        }
+
+        private void MenuVerDetalles_Click(object sender, RoutedEventArgs e)
+        {
+            if (GridProducts.SelectedItem is ProductViewModel prodVm)
+            {
+                var dlg = new ProductDialog(prodVm.Product, isReadOnly: true);
+                dlg.ShowDialog();
+            }
+        }
+
+        private void MenuEliminar_Click(object sender, RoutedEventArgs e)
+        {
+            if (GridProducts.SelectedItem is ProductViewModel prodVm)
+            {
+                var prod = prodVm.Product;
+                var result = MessageBox.Show(
+                    $"⚠️ ADVERTENCIA ⚠️\n\n" +
+                    $"¿Está seguro que desea ELIMINAR permanentemente el producto '{prod.Name}'?\n\n" +
+                    "Esta acción NO se puede deshacer.\n" +
+                    "Si solo desea que no aparezca en ventas, use 'Discontinuar' en su lugar.",
+                    "Confirmar Eliminación",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Warning);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    using var ctx = new AppDbContext();
+                    var p = ctx.Products.FirstOrDefault(x => x.Id == prod.Id);
+                    if (p != null)
+                    {
+                        ctx.Products.Remove(p);
+                        ctx.SaveChanges();
+                        CargarProductos();
+                        MessageBox.Show("✓ Producto eliminado permanentemente.", "Éxito",
+                            MessageBoxButton.OK, MessageBoxImage.Information);
+                    }
+                }
+            }
+        }
+
+        private void TxtBuscar_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            CargarProductos();
+        }
+
+        private void CmbCategoria_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            CargarProductos();
+        }
+
+        private void ChkMostrarDiscontinuados_Changed(object sender, RoutedEventArgs e)
+        {
+            _mostrarDiscontinuados = ChkMostrarDiscontinuados.IsChecked == true;
+            CargarProductos();
+        }
+
+        private void GridProducts_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (GridProducts.SelectedItem is ProductViewModel)
+            {
+                BtnModificar_Click(sender, e);
+            }
+        }
+    }
+
+    #region ViewModels y Converters
+
+    /// <summary>
+    /// ViewModel para mostrar productos en el grid con propiedades calculadas
+    /// </summary>
+    public class ProductViewModel
+    {
+        public Product Product { get; set; } = null!;
+        public decimal DisplayPrice { get; set; }
+        public bool TracksStock { get; set; }
+        public string StockDisplay { get; set; } = "";
+
+        // Propiedades delegadas para binding
+        public string Code => Product.Code;
+        public string Name => Product.Name;
+        public int? Stock => Product.Stock;  // CAMBIADO a nullable
+        public Category? Category => Product.Category;
+        public bool IsActive => Product.IsActive;
+    }
+
+    /// <summary>
+    /// Converter para mostrar el estado como texto
+    /// </summary>
+    public class BoolToEstadoConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool isActive)
+            {
+                return isActive ? "✓ Activo" : "✗ Discontinuado";
+            }
+            return "Desconocido";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    /// <summary>
+    /// Converter para mostrar check/cruz según bool
+    /// </summary>
+    public class BoolToCheckConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool tracksStock)
+            {
+                return tracksStock ? "✓" : "✗";
+            }
+            return "-";
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    #endregion
+}
